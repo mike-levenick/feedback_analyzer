@@ -27,12 +27,15 @@ This document describes the DynamoDB schema used for conversation history messag
 - `stop_reason`: Optional[string]
 - `role`: `"user"` or `"assistant"`
 - `response_metadata`: Optional[dict] (assistant messages)
+- `verso`: Optional[`Verso`] — `"up"` or `"down"` feedback direction (set via `set_feedback_verso()`)
+- `feedback`: Optional[string] — optional freeform feedback/comment set via `set_feedback_comment()`
 - `sources`: Optional[list[Source]]
 - `created_at`, `updated_at`: string timestamps
 
 ## Thread metadata (`ThreadMetadata`)
 - `PK`, `SK` (`THREAD#{thread_id}`), `SKTimestampThread`, `ExpiryTime`
 - `org_id`, `user_id`, `origin`, `is_temporary`, `title`, `created_at`, `updated_at`, `user_message_count`
+- `SKTimestampThread`: string — `THREAD#{timestamp}#{thread_id}` used by the `PK-SKTimestampThread-index-v1` GSI to sort threads by time
 
 ## Notes
 - Message SK uses zero-padded timestamps (`:019d`) so lexicographic order equals chronological order.
@@ -40,7 +43,7 @@ This document describes the DynamoDB schema used for conversation history messag
 - `content` may be a plain string or a structured list/object — frontends should handle both.
 
 ## Example (simplified) message item
-```
+```json
 {
   "PK": "org123#tenantA#user456#thread789",
   "SK": "MSG#0000000123456789012#msg_abc123",
@@ -50,16 +53,10 @@ This document describes the DynamoDB schema used for conversation history messag
   "message_id": "msg_abc123",
   "timestamp": 1234567890123,
   "content": "Here's an example with an apostrophe",
+  "verso": "up",
+  "feedback": "Helpful answer",
   "role": "user",
   "created_at": "2025-12-10T12:34:56",
   "updated_at": "2025-12-10T12:34:56"
 }
 ```
-
-## Rendering / Security Considerations
-- Historically the backend escaped input before storing; that caused HTML entities (e.g., `&#x27;`) to appear in UI history.
-- Current recommended approach: store raw text and ensure the frontend renders message content as text (no `v-html` / `innerHTML`) to avoid XSS.
-- If HTML rendering is required, sanitize on the client side (DOMPurify) or server side (bleach) and apply CSP headers for defense-in-depth.
-
----
-Generated from repository model definitions in `assistant/database/schema.py` and `assistant/database/history_db.py`.
