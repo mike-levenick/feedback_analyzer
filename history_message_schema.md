@@ -60,11 +60,3 @@ This document describes the DynamoDB schema used for conversation history messag
   "updated_at": "2025-12-10T12:34:56"
 }
 ```
-
-## Rendering / Security Considerations
-- Historically the backend escaped input before storing; that caused HTML entities (e.g., `&#x27;`) to appear in UI history.
-- Current recommended approach: store raw text and ensure the frontend renders message content as text (no `v-html` / `innerHTML`) to avoid XSS.
-- If HTML rendering is required, sanitize on the client side (DOMPurify) or server side (bleach) and apply CSP headers for defense-in-depth.
-
----
-Generated from repository model definitions in `assistant/database/schema.py` and `assistant/database/history_db.py`.
