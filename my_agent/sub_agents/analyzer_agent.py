@@ -1062,7 +1062,33 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
                 "patterns": ["no_assistant_messages"]
             }
 
-        # Analyze platform knowledge (macOS, iOS, iPadOS)
+        # First determine if this conversation is about Apple ecosystem topics
+        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
+        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+
+        apple_context_phrases = [
+            "mac", "macos", "ios", "ipad", "iphone", "apple", "safari", "finder",
+            "system preferences", "app store", "xcode", "terminal", "monterey",
+            "ventura", "sonoma", "big sur", "silicon", "t2", "secure enclave"
+        ]
+
+        apple_context_count = sum(1 for phrase in apple_context_phrases
+                                if phrase in all_content or phrase in user_content)
+
+        # If conversation doesn't seem Apple-focused, use appropriate baseline scoring
+        if apple_context_count == 0:
+            return {
+                "status": "success",
+                "ecosystem_expertise_score": 6.0,  # Neutral score - no Apple context needed
+                "platform_knowledge_score": 6.0,
+                "hardware_expertise_score": 6.0,
+                "system_features_score": 6.0,
+                "ecosystem_thinking_score": 6.0,
+                "patterns": ["non_apple_focused_conversation"],
+                "metrics": {"apple_context_indicators": 0, "analysis_skipped": True}
+            }
+
+        # Analyze platform knowledge (only when Apple context exists)
         platform_terms_found = 0
         hardware_terms_found = 0
         system_features_found = 0
@@ -1105,10 +1131,11 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
         ]
         summary_signals = sum(1 for indicator in summary_apple_indicators if indicator in summary_lower)
 
-        # Calculate scores (1-10 scale)
-        platform_knowledge_score = min(10, (platform_terms_found * 2) + (summary_signals * 1))
-        hardware_expertise_score = min(10, hardware_terms_found * 3)
-        system_features_score = min(10, (system_features_found * 2) + (advanced_concepts * 1))
+        # Calculate scores with baseline (1-10 scale) - baseline is 5 when Apple context exists
+        base_score = 5
+        platform_knowledge_score = min(10, base_score + (platform_terms_found * 1.5) + (summary_signals * 0.5))
+        hardware_expertise_score = min(10, base_score + (hardware_terms_found * 1.5))
+        system_features_score = min(10, base_score + (system_features_found * 1.5) + (advanced_concepts * 0.5))
 
         # Best practices and ecosystem thinking
         ecosystem_thinking_indicators = [
@@ -1121,7 +1148,7 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
             content = str(msg.get("content", "")).lower()
             ecosystem_thinking += sum(1 for indicator in ecosystem_thinking_indicators if indicator in content)
 
-        ecosystem_thinking_score = min(10, ecosystem_thinking * 2.5)
+        ecosystem_thinking_score = min(10, base_score + (ecosystem_thinking * 1.5))
 
         # Overall ecosystem expertise score
         overall_score = (platform_knowledge_score + hardware_expertise_score +
@@ -1608,7 +1635,34 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
                 "patterns": ["no_assistant_messages"]
             }
 
-        # Analyze enrollment method knowledge
+        # First determine if this conversation is about MDM/device management topics
+        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
+        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+
+        mdm_context_phrases = [
+            "mdm", "device management", "enrollment", "configuration profile", "policy",
+            "mobile device", "device", "profile", "prestage", "dep", "ade", "inventory",
+            "self service", "jamf pro", "computer", "supervised", "management"
+        ]
+
+        mdm_context_count = sum(1 for phrase in mdm_context_phrases
+                              if phrase in all_content or phrase in user_content)
+
+        # If conversation doesn't seem MDM-focused, use appropriate baseline scoring
+        if mdm_context_count == 0:
+            return {
+                "status": "success",
+                "mdm_expertise_score": 6.0,  # Neutral score - no MDM context needed
+                "enrollment_knowledge_score": 6.0,
+                "configuration_profile_score": 6.0,
+                "device_policy_score": 6.0,
+                "advanced_concepts_score": 6.0,
+                "lifecycle_management_score": 6.0,
+                "patterns": ["non_mdm_focused_conversation"],
+                "metrics": {"mdm_context_indicators": 0, "analysis_skipped": True}
+            }
+
+        # Analyze enrollment method knowledge (only when MDM context exists)
         enrollment_terms_found = 0
         enrollment_method_explanations = 0
 
@@ -1628,7 +1682,9 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
             ]
             enrollment_method_explanations += sum(1 for phrase in enrollment_explanation_phrases if phrase in content)
 
-        enrollment_knowledge_score = min(10, (enrollment_terms_found * 1.5) + (enrollment_method_explanations * 2))
+        # Apply contextual scoring with baseline of 5 when MDM context exists
+        base_score = 5
+        enrollment_knowledge_score = min(10, base_score + (enrollment_terms_found * 1) + (enrollment_method_explanations * 1.5))
 
         # Analyze configuration profile expertise
         config_profile_terms = 0
@@ -1651,7 +1707,7 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
             ]
             profile_implementation_guidance += sum(1 for phrase in implementation_phrases if phrase in content)
 
-        config_profile_score = min(10, (config_profile_terms * 2) + (profile_implementation_guidance * 1.5))
+        config_profile_score = min(10, base_score + (config_profile_terms * 1.5) + (profile_implementation_guidance * 1))
 
         # Analyze device policy and management understanding
         policy_terms = 0
@@ -1674,7 +1730,7 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
             ]
             management_best_practices += sum(1 for phrase in best_practice_phrases if phrase in content)
 
-        policy_score = min(10, (policy_terms * 2) + (management_best_practices * 1.5))
+        policy_score = min(10, base_score + (policy_terms * 1.5) + (management_best_practices * 1))
 
         # Analyze advanced MDM concepts
         advanced_concepts = 0
@@ -1697,7 +1753,7 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
             ]
             troubleshooting_knowledge += sum(1 for phrase in troubleshooting_phrases if phrase in content)
 
-        advanced_score = min(10, (advanced_concepts * 3) + (troubleshooting_knowledge * 2))
+        advanced_score = min(10, base_score + (advanced_concepts * 1.5) + (troubleshooting_knowledge * 1))
 
         # Analyze device lifecycle management
         lifecycle_knowledge = 0
@@ -1720,7 +1776,7 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
             ]
             security_focus += sum(1 for phrase in security_phrases if phrase in content)
 
-        lifecycle_score = min(10, (lifecycle_knowledge * 2.5) + (security_focus * 2))
+        lifecycle_score = min(10, base_score + (lifecycle_knowledge * 1.5) + (security_focus * 1))
 
         # Analyze summary for MDM context
         summary_lower = str(summary).lower()
@@ -1841,7 +1897,36 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 "patterns": ["no_assistant_messages"]
             }
 
-        # Analyze security framework knowledge
+        # First determine if this conversation is about security/compliance topics
+        security_context_indicators = []
+        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
+        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+
+        security_context_phrases = [
+            "security", "compliance", "audit", "encrypt", "certificate", "access control",
+            "policy", "permission", "authentication", "authorization", "vulnerability",
+            "threat", "risk", "privacy", "gdpr", "hipaa", "soc2", "framework"
+        ]
+
+        security_context_count = sum(1 for phrase in security_context_phrases
+                                   if phrase in all_content or phrase in user_content)
+
+        # If conversation doesn't seem security-focused, use appropriate baseline scoring
+        if security_context_count == 0:
+            return {
+                "status": "success",
+                "security_compliance_score": 6.0,  # Neutral score - no security context needed
+                "framework_knowledge_score": 6.0,
+                "zero_trust_score": 6.0,
+                "jamf_security_score": 6.0,
+                "security_implementation_score": 6.0,
+                "compliance_score": 6.0,
+                "privacy_score": 6.0,
+                "patterns": ["non_security_focused_conversation"],
+                "metrics": {"security_context_indicators": 0, "analysis_skipped": True}
+            }
+
+        # Analyze security framework knowledge (only when security context exists)
         framework_terms_found = 0
         framework_explanations = 0
 
@@ -1861,7 +1946,9 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             ]
             framework_explanations += sum(1 for phrase in framework_explanation_phrases if phrase in content)
 
-        framework_knowledge_score = min(10, (framework_terms_found * 2) + (framework_explanations * 1.5))
+        # Apply contextual scoring - baseline is 5 (neutral) when security topics are present but not deeply discussed
+        base_score = 5
+        framework_knowledge_score = min(10, base_score + (framework_terms_found * 1.5) + (framework_explanations * 1))
 
         # Analyze Zero Trust principles understanding
         zero_trust_concepts = 0
@@ -1886,7 +1973,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             ]
             zero_trust_implementation += sum(1 for phrase in implementation_phrases if phrase in content)
 
-        zero_trust_score = min(10, (zero_trust_concepts * 2.5) + (zero_trust_implementation * 2))
+        zero_trust_score = min(10, base_score + (zero_trust_concepts * 1.5) + (zero_trust_implementation * 1))
 
         # Analyze Jamf-specific security guidance
         jamf_security_terms = 0
@@ -1905,7 +1992,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 if term.lower() in content:
                     apple_security_knowledge += 1
 
-        jamf_security_score = min(10, (jamf_security_terms * 2.5) + (apple_security_knowledge * 2))
+        jamf_security_score = min(10, base_score + (jamf_security_terms * 1.5) + (apple_security_knowledge * 1))
 
         # Analyze security implementation recommendations
         implementation_guidance = 0
@@ -1930,7 +2017,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             ]
             risk_mitigation += sum(1 for phrase in risk_phrases if phrase in content)
 
-        implementation_score = min(10, (implementation_guidance * 2) + (risk_mitigation * 1.5))
+        implementation_score = min(10, base_score + (implementation_guidance * 1.5) + (risk_mitigation * 1))
 
         # Analyze compliance-specific guidance
         compliance_knowledge = 0
@@ -1955,7 +2042,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             ]
             audit_preparation += sum(1 for phrase in audit_phrases if phrase in content)
 
-        compliance_score = min(10, (compliance_knowledge * 2.5) + (audit_preparation * 2))
+        compliance_score = min(10, base_score + (compliance_knowledge * 1.5) + (audit_preparation * 1))
 
         # Analyze data protection and privacy guidance
         data_protection = 0
@@ -1980,7 +2067,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             ]
             privacy_controls += sum(1 for phrase in privacy_phrases if phrase in content)
 
-        privacy_score = min(10, (data_protection * 2) + (privacy_controls * 2.5))
+        privacy_score = min(10, base_score + (data_protection * 1.5) + (privacy_controls * 1.5))
 
         # Analyze summary for security context
         summary_lower = str(summary).lower()
