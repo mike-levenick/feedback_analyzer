@@ -12,32 +12,132 @@ from typing import Dict, List, Any
 # Jamf Software Domain Knowledge Base
 JAMF_KNOWLEDGE = {
     "apple_platforms": {
-        "macos_versions": ["Sonoma", "Ventura", "Monterey", "Big Sur", "Catalina", "Mojave"],
+        "macos_versions": [
+            "Sonoma",
+            "Ventura",
+            "Monterey",
+            "Big Sur",
+            "Catalina",
+            "Mojave",
+        ],
         "ios_versions": ["iOS 17", "iOS 16", "iOS 15", "iPadOS 17", "iPadOS 16"],
-        "hardware_terms": ["Apple Silicon", "M1", "M2", "M3", "T2 Security Chip", "Secure Enclave", "Touch ID", "Face ID"],
-        "system_features": ["System Integrity Protection", "Gatekeeper", "XProtect", "FileVault", "Secure Boot", "Activation Lock"]
+        "hardware_terms": [
+            "Apple Silicon",
+            "M1",
+            "M2",
+            "M3",
+            "T2 Security Chip",
+            "Secure Enclave",
+            "Touch ID",
+            "Face ID",
+        ],
+        "system_features": [
+            "System Integrity Protection",
+            "Gatekeeper",
+            "XProtect",
+            "FileVault",
+            "Secure Boot",
+            "Activation Lock",
+        ],
     },
     "jamf_products": {
-        "jamf_pro": ["Policy", "Configuration Profile", "Self Service", "Inventory Collection", "Computer Groups", "Smart Groups", "Prestage Enrollment"],
-        "jamf_school": ["Classes", "App Assignment", "Restrictions", "Screen Time", "Student Progress", "Teacher Tools"],
-        "jamf_connect": ["Password Sync", "Network Authentication", "Mobile Accounts", "Active Directory", "LDAP", "SSO"],
-        "jamf_protect": ["Analytics", "Threat Events", "Computer Groups", "Compliance", "Endpoint Detection", "Unified Logs"]
+        "jamf_pro": [
+            "Policy",
+            "Configuration Profile",
+            "Self Service",
+            "Inventory Collection",
+            "Computer Groups",
+            "Smart Groups",
+            "Prestage Enrollment",
+        ],
+        "jamf_school": [
+            "Classes",
+            "App Assignment",
+            "Restrictions",
+            "Screen Time",
+            "Student Progress",
+            "Teacher Tools",
+        ],
+        "jamf_connect": [
+            "Password Sync",
+            "Network Authentication",
+            "Mobile Accounts",
+            "Active Directory",
+            "LDAP",
+            "SSO",
+        ],
+        "jamf_protect": [
+            "Analytics",
+            "Threat Events",
+            "Computer Groups",
+            "Compliance",
+            "Endpoint Detection",
+            "Unified Logs",
+        ],
     },
     "mdm_concepts": {
-        "enrollment": ["DEP", "ADE", "User Initiated Enrollment", "Prestage Enrollment", "Manual Enrollment", "Zero-Touch"],
-        "management": ["Configuration Profiles", "Restrictions", "Apps & Books", "Software Updates", "Remote Commands"],
-        "security": ["FileVault Key Escrow", "Certificate Management", "VPN Configuration", "Wi-Fi Management", "Passcode Policies"]
+        "enrollment": [
+            "DEP",
+            "ADE",
+            "User Initiated Enrollment",
+            "Prestage Enrollment",
+            "Manual Enrollment",
+            "Zero-Touch",
+        ],
+        "management": [
+            "Configuration Profiles",
+            "Restrictions",
+            "Apps & Books",
+            "Software Updates",
+            "Remote Commands",
+        ],
+        "security": [
+            "FileVault Key Escrow",
+            "Certificate Management",
+            "VPN Configuration",
+            "Wi-Fi Management",
+            "Passcode Policies",
+        ],
     },
     "security_compliance": {
         "frameworks": ["Zero Trust", "NIST", "SOC2", "GDPR", "HIPAA", "CIS Controls"],
-        "jamf_security": ["Jamf Protect", "Compliance Monitoring", "Threat Detection", "Endpoint Security"],
-        "apple_security": ["System Integrity Protection", "Secure Boot", "Hardware Security", "App Notarization"]
+        "jamf_security": [
+            "Jamf Protect",
+            "Compliance Monitoring",
+            "Threat Detection",
+            "Endpoint Security",
+        ],
+        "apple_security": [
+            "System Integrity Protection",
+            "Secure Boot",
+            "Hardware Security",
+            "App Notarization",
+        ],
     },
     "common_terms": {
-        "deployment": ["Mass Deployment", "Imaging", "DEP Enrollment", "User Enrollment", "Device Enrollment"],
-        "troubleshooting": ["Inventory Update", "Policy Execution", "Log Collection", "Remote Desktop", "Screen Sharing"],
-        "integration": ["Active Directory", "LDAP", "SSO", "SCEP", "PKI", "API Integration"]
-    }
+        "deployment": [
+            "Mass Deployment",
+            "Imaging",
+            "DEP Enrollment",
+            "User Enrollment",
+            "Device Enrollment",
+        ],
+        "troubleshooting": [
+            "Inventory Update",
+            "Policy Execution",
+            "Log Collection",
+            "Remote Desktop",
+            "Screen Sharing",
+        ],
+        "integration": [
+            "Active Directory",
+            "LDAP",
+            "SSO",
+            "SCEP",
+            "PKI",
+            "API Integration",
+        ],
+    },
 }
 
 
@@ -65,7 +165,7 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
                 "turn_taking_balance": 0,
                 "topic_coherence": 0,
                 "conversation_closure": 0,
-                "patterns": []
+                "patterns": [],
             }
 
         # Analyze turn-taking patterns
@@ -81,7 +181,15 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
             balance_score = max(0, 10 - abs(user_ratio - 0.5) * 20)
 
         # Analyze question-answer matching
-        question_patterns = [r'\?', r'\bhow\b', r'\bwhat\b', r'\bwhy\b', r'\bwhen\b', r'\bwhere\b', r'\bcan you\b']
+        question_patterns = [
+            r"\?",
+            r"\bhow\b",
+            r"\bwhat\b",
+            r"\bwhy\b",
+            r"\bwhen\b",
+            r"\bwhere\b",
+            r"\bcan you\b",
+        ]
         question_count = 0
 
         for msg in user_messages:
@@ -92,27 +200,51 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
                     break
 
         # Score based on assistant response availability
-        response_coverage = min(10, (len(assistant_messages) / max(1, question_count)) * 10)
+        response_coverage = min(
+            10, (len(assistant_messages) / max(1, question_count)) * 10
+        )
 
         # Analyze topic coherence from summary
         summary_lower = str(summary).lower()
-        coherence_indicators = ["discussed", "addressed", "covered", "resolved", "explained"]
-        coherence_signals = sum(1 for indicator in coherence_indicators if indicator in summary_lower)
+        coherence_indicators = [
+            "discussed",
+            "addressed",
+            "covered",
+            "resolved",
+            "explained",
+        ]
+        coherence_signals = sum(
+            1 for indicator in coherence_indicators if indicator in summary_lower
+        )
         coherence_score = min(10, coherence_signals * 2)
 
         # Analyze conversation closure
-        closure_indicators = ["resolved", "completed", "finished", "concluded", "helped"]
-        closure_signals = sum(1 for indicator in closure_indicators if indicator in summary_lower)
+        closure_indicators = [
+            "resolved",
+            "completed",
+            "finished",
+            "concluded",
+            "helped",
+        ]
+        closure_signals = sum(
+            1 for indicator in closure_indicators if indicator in summary_lower
+        )
 
         if messages and assistant_messages:
             last_message = messages[-1]
             if last_message.get("role") == "assistant":
                 last_content = str(last_message.get("content", "")).lower()
                 closure_phrases = ["help", "assist", "question", "need", "else"]
-                has_closure_offer = any(phrase in last_content for phrase in closure_phrases)
-                closure_score = min(10, closure_signals * 3 + (3 if has_closure_offer else 0))
+                has_closure_offer = any(
+                    phrase in last_content for phrase in closure_phrases
+                )
+                closure_score = min(
+                    10, closure_signals * 3 + (3 if has_closure_offer else 0)
+                )
             else:
-                closure_score = max(0, closure_signals * 2)  # Lower score if user had last word
+                closure_score = max(
+                    0, closure_signals * 2
+                )  # Lower score if user had last word
         else:
             closure_score = 0
 
@@ -133,7 +265,9 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
             patterns.append("topic_drift_detected")
 
         # Calculate overall flow score
-        flow_score = (balance_score + response_coverage + coherence_score + closure_score) / 4
+        flow_score = (
+            balance_score + response_coverage + coherence_score + closure_score
+        ) / 4
 
         return {
             "status": "success",
@@ -148,8 +282,8 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
                 "user_messages": len(user_messages),
                 "assistant_messages": len(assistant_messages),
                 "questions_identified": question_count,
-                "user_message_ratio": round(user_ratio, 2)
-            }
+                "user_message_ratio": round(user_ratio, 2),
+            },
         }
 
     except Exception as e:
@@ -183,7 +317,7 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
                 "relevance_score": 0,
                 "completeness_score": 0,
                 "helpfulness_score": 0,
-                "patterns": ["no_assistant_responses"]
+                "patterns": ["no_assistant_responses"],
             }
 
         # Analyze response relevance
@@ -203,22 +337,44 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
                 assistant_content = str(assistant_response.get("content", "")).lower()
 
                 # Check for direct acknowledgment and addressing
-                acknowledgment_phrases = ["understand", "see", "help", "answer", "address"]
-                has_acknowledgment = any(phrase in assistant_content for phrase in acknowledgment_phrases)
+                acknowledgment_phrases = [
+                    "understand",
+                    "see",
+                    "help",
+                    "answer",
+                    "address",
+                ]
+                has_acknowledgment = any(
+                    phrase in assistant_content for phrase in acknowledgment_phrases
+                )
 
                 # Check for question words in user message and corresponding answers
-                user_question_words = re.findall(r'\b(how|what|why|when|where|can|could|would|should)\b', user_content)
+                user_question_words = re.findall(
+                    r"\b(how|what|why|when|where|can|could|would|should)\b",
+                    user_content,
+                )
                 if user_question_words and has_acknowledgment:
                     relevance_indicators.append(1)
                 else:
                     relevance_indicators.append(0.5)
 
-        relevance_score = (sum(relevance_indicators) / max(len(relevance_indicators), 1)) * 10
+        relevance_score = (
+            sum(relevance_indicators) / max(len(relevance_indicators), 1)
+        ) * 10
 
         # Analyze response completeness from summary
         summary_lower = str(summary).lower()
-        completeness_indicators = ["addressed", "covered", "explained", "provided", "discussed", "resolved"]
-        completeness_signals = sum(1 for indicator in completeness_indicators if indicator in summary_lower)
+        completeness_indicators = [
+            "addressed",
+            "covered",
+            "explained",
+            "provided",
+            "discussed",
+            "resolved",
+        ]
+        completeness_signals = sum(
+            1 for indicator in completeness_indicators if indicator in summary_lower
+        )
         completeness_score = min(10, completeness_signals * 1.5)
 
         # Analyze helpfulness patterns
@@ -232,16 +388,31 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
                 helpfulness_signals += 1
 
             # Look for proactive assistance
-            proactive_phrases = ["also", "additionally", "furthermore", "might want", "consider", "suggest"]
+            proactive_phrases = [
+                "also",
+                "additionally",
+                "furthermore",
+                "might want",
+                "consider",
+                "suggest",
+            ]
             if any(phrase in content for phrase in proactive_phrases):
                 helpfulness_signals += 1
 
             # Look for alternative solutions
-            alternative_phrases = ["alternatively", "another way", "you could also", "option", "approach"]
+            alternative_phrases = [
+                "alternatively",
+                "another way",
+                "you could also",
+                "option",
+                "approach",
+            ]
             if any(phrase in content for phrase in alternative_phrases):
                 helpfulness_signals += 1
 
-        helpfulness_score = min(10, (helpfulness_signals / max(len(assistant_messages), 1)) * 10)
+        helpfulness_score = min(
+            10, (helpfulness_signals / max(len(assistant_messages), 1)) * 10
+        )
 
         # Analyze accuracy confidence indicators
         accuracy_indicators = []
@@ -249,8 +420,20 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
             content = str(msg.get("content", "")).lower()
 
             # High confidence indicators
-            high_confidence = ["definitely", "certainly", "absolutely", "exactly", "precisely"]
-            medium_confidence = ["likely", "probably", "generally", "typically", "usually"]
+            high_confidence = [
+                "definitely",
+                "certainly",
+                "absolutely",
+                "exactly",
+                "precisely",
+            ]
+            medium_confidence = [
+                "likely",
+                "probably",
+                "generally",
+                "typically",
+                "usually",
+            ]
             low_confidence = ["might", "could", "perhaps", "possibly", "may be"]
 
             if any(phrase in content for phrase in high_confidence):
@@ -262,7 +445,9 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
             else:
                 accuracy_indicators.append(0.7)  # Neutral
 
-        accuracy_confidence = (sum(accuracy_indicators) / max(len(accuracy_indicators), 1)) * 10
+        accuracy_confidence = (
+            sum(accuracy_indicators) / max(len(accuracy_indicators), 1)
+        ) * 10
 
         # Identify patterns
         patterns = []
@@ -282,7 +467,12 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
             patterns.append("incomplete_responses")
 
         # Calculate overall quality score
-        quality_score = (relevance_score + completeness_score + helpfulness_score + accuracy_confidence) / 4
+        quality_score = (
+            relevance_score
+            + completeness_score
+            + helpfulness_score
+            + accuracy_confidence
+        ) / 4
 
         return {
             "status": "success",
@@ -296,12 +486,15 @@ def evaluate_response_quality(messages: list[dict], summary: str) -> dict:
                 "assistant_messages_analyzed": len(assistant_messages),
                 "relevance_indicators": len(relevance_indicators),
                 "helpfulness_signals": helpfulness_signals,
-                "completeness_signals": completeness_signals
-            }
+                "completeness_signals": completeness_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Response quality analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Response quality analysis failed: {str(e)}",
+        }
 
 
 def assess_communication_effectiveness(messages: list[dict], summary: str) -> dict:
@@ -331,7 +524,7 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
                 "tone_score": 0,
                 "empathy_score": 0,
                 "professionalism_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze language clarity
@@ -345,7 +538,13 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
             total_words += len(words)
 
             # Clear language indicators
-            clear_phrases = ["let me explain", "in other words", "to clarify", "simply put", "basically"]
+            clear_phrases = [
+                "let me explain",
+                "in other words",
+                "to clarify",
+                "simply put",
+                "basically",
+            ]
             if any(phrase in content.lower() for phrase in clear_phrases):
                 clarity_signals += 1
 
@@ -355,16 +554,39 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
                 complexity_indicators += 1
 
         avg_words_per_message = total_words / max(len(assistant_messages), 1)
-        clarity_score = max(0, min(10,
-            (clarity_signals * 2) +
-            (5 if avg_words_per_message < 100 else 3) -  # Conciseness bonus
-            (complexity_indicators * 1.5)
-        ))
+        clarity_score = max(
+            0,
+            min(
+                10,
+                (clarity_signals * 2)
+                + (5 if avg_words_per_message < 100 else 3)  # Conciseness bonus
+                - (complexity_indicators * 1.5),
+            ),
+        )
 
         # Analyze tone consistency and appropriateness
-        positive_tone_indicators = ["happy", "glad", "pleased", "excellent", "great", "wonderful"]
-        empathetic_tone_indicators = ["understand", "appreciate", "sorry", "apologize", "concern"]
-        professional_tone_indicators = ["recommend", "suggest", "advise", "consider", "propose"]
+        positive_tone_indicators = [
+            "happy",
+            "glad",
+            "pleased",
+            "excellent",
+            "great",
+            "wonderful",
+        ]
+        empathetic_tone_indicators = [
+            "understand",
+            "appreciate",
+            "sorry",
+            "apologize",
+            "concern",
+        ]
+        professional_tone_indicators = [
+            "recommend",
+            "suggest",
+            "advise",
+            "consider",
+            "propose",
+        ]
 
         tone_signals = 0
         for msg in assistant_messages:
@@ -382,9 +604,16 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
 
         # Analyze empathy indicators
         empathy_phrases = [
-            "understand how you feel", "i can see why", "that must be frustrating",
-            "i appreciate", "thank you for", "i'm sorry", "let me help",
-            "i realize", "i recognize", "that sounds"
+            "understand how you feel",
+            "i can see why",
+            "that must be frustrating",
+            "i appreciate",
+            "thank you for",
+            "i'm sorry",
+            "let me help",
+            "i realize",
+            "i recognize",
+            "that sounds",
         ]
 
         empathy_signals = 0
@@ -402,25 +631,48 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
             content = str(msg.get("content", "")).lower()
 
             # Professional language markers
-            professional_markers = ["please", "thank you", "would you", "could you", "if you'd like"]
-            professional_elements += sum(1 for marker in professional_markers if marker in content)
+            professional_markers = [
+                "please",
+                "thank you",
+                "would you",
+                "could you",
+                "if you'd like",
+            ]
+            professional_elements += sum(
+                1 for marker in professional_markers if marker in content
+            )
 
             # Unprofessional indicators
             informal_language = ["gonna", "wanna", "yeah", "ok", "yep", "nope"]
-            unprofessional_indicators += sum(1 for informal in informal_language if informal in content)
+            unprofessional_indicators += sum(
+                1 for informal in informal_language if informal in content
+            )
 
-        professionalism_score = min(10, max(0,
-            (professional_elements * 1.5) -
-            (unprofessional_indicators * 2) + 5  # Base score
-        ))
+        professionalism_score = min(
+            10,
+            max(
+                0,
+                (professional_elements * 1.5)
+                - (unprofessional_indicators * 2)
+                + 5,  # Base score
+            ),
+        )
 
         # Analyze from summary context
         summary_lower = str(summary).lower()
         summary_communication_indicators = [
-            "clearly explained", "well communicated", "professional manner",
-            "empathetic response", "clear guidance", "helpful tone"
+            "clearly explained",
+            "well communicated",
+            "professional manner",
+            "empathetic response",
+            "clear guidance",
+            "helpful tone",
         ]
-        summary_signals = sum(1 for indicator in summary_communication_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1
+            for indicator in summary_communication_indicators
+            if indicator in summary_lower
+        )
 
         # Adjust scores based on summary insights
         if summary_signals > 0:
@@ -455,7 +707,9 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
             patterns.append("overly_brief_responses")
 
         # Calculate overall communication score
-        communication_score = (clarity_score + tone_score + empathy_score + professionalism_score) / 4
+        communication_score = (
+            clarity_score + tone_score + empathy_score + professionalism_score
+        ) / 4
 
         return {
             "status": "success",
@@ -473,12 +727,15 @@ def assess_communication_effectiveness(messages: list[dict], summary: str) -> di
                 "empathy_signals": empathy_signals,
                 "professional_elements": professional_elements,
                 "unprofessional_indicators": unprofessional_indicators,
-                "summary_communication_signals": summary_signals
-            }
+                "summary_communication_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Communication assessment failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Communication assessment failed: {str(e)}",
+        }
 
 
 def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) -> dict:
@@ -507,24 +764,52 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
                 "confidence_handling": 0,
                 "verification_score": 0,
                 "uncertainty_management": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze confidence language patterns
         high_confidence_phrases = [
-            "definitely", "certainly", "absolutely", "exactly", "precisely",
-            "always", "never", "guaranteed", "without doubt", "确保", "must be"
+            "definitely",
+            "certainly",
+            "absolutely",
+            "exactly",
+            "precisely",
+            "always",
+            "never",
+            "guaranteed",
+            "without doubt",
+            "确保",
+            "must be",
         ]
 
         medium_confidence_phrases = [
-            "likely", "probably", "generally", "typically", "usually",
-            "often", "commonly", "tends to", "in most cases", "should be"
+            "likely",
+            "probably",
+            "generally",
+            "typically",
+            "usually",
+            "often",
+            "commonly",
+            "tends to",
+            "in most cases",
+            "should be",
         ]
 
         uncertainty_phrases = [
-            "might", "could", "perhaps", "possibly", "may be", "potentially",
-            "i think", "i believe", "it seems", "appears to", "suggests",
-            "not sure", "uncertain", "unclear"
+            "might",
+            "could",
+            "perhaps",
+            "possibly",
+            "may be",
+            "potentially",
+            "i think",
+            "i believe",
+            "it seems",
+            "appears to",
+            "suggests",
+            "not sure",
+            "uncertain",
+            "unclear",
         ]
 
         confidence_scores = []
@@ -534,9 +819,15 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
             content = str(msg.get("content", "")).lower()
 
             # Score confidence appropriateness
-            high_conf_count = sum(1 for phrase in high_confidence_phrases if phrase in content)
-            medium_conf_count = sum(1 for phrase in medium_confidence_phrases if phrase in content)
-            uncertain_count = sum(1 for phrase in uncertainty_phrases if phrase in content)
+            high_conf_count = sum(
+                1 for phrase in high_confidence_phrases if phrase in content
+            )
+            medium_conf_count = sum(
+                1 for phrase in medium_confidence_phrases if phrase in content
+            )
+            uncertain_count = sum(
+                1 for phrase in uncertainty_phrases if phrase in content
+            )
 
             # Balanced confidence is better than extremes
             if high_conf_count > 0 and uncertain_count > 0:
@@ -557,9 +848,15 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
 
             # Check for uncertainty handling
             uncertainty_handling_phrases = [
-                "let me verify", "i'll double check", "let me confirm",
-                "according to", "based on", "as per", "documented",
-                "i should clarify", "to be accurate"
+                "let me verify",
+                "i'll double check",
+                "let me confirm",
+                "according to",
+                "based on",
+                "as per",
+                "documented",
+                "i should clarify",
+                "to be accurate",
             ]
 
             if any(phrase in content for phrase in uncertainty_handling_phrases):
@@ -569,14 +866,32 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
 
         # Analyze verification and source patterns
         verification_indicators = [
-            "according to", "based on", "documented", "official", "specification",
-            "reference", "source", "documentation", "manual", "guide",
-            "as stated in", "per the", "verified", "confirmed"
+            "according to",
+            "based on",
+            "documented",
+            "official",
+            "specification",
+            "reference",
+            "source",
+            "documentation",
+            "manual",
+            "guide",
+            "as stated in",
+            "per the",
+            "verified",
+            "confirmed",
         ]
 
         correction_indicators = [
-            "actually", "correction", "i misstated", "let me correct",
-            "i was wrong", "mistake", "error", "incorrect", "revise"
+            "actually",
+            "correction",
+            "i misstated",
+            "let me correct",
+            "i was wrong",
+            "mistake",
+            "error",
+            "incorrect",
+            "revise",
         ]
 
         verification_signals = 0
@@ -585,8 +900,12 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
         for msg in assistant_messages:
             content = str(msg.get("content", "")).lower()
 
-            verification_signals += sum(1 for indicator in verification_indicators if indicator in content)
-            correction_signals += sum(1 for indicator in correction_indicators if indicator in content)
+            verification_signals += sum(
+                1 for indicator in verification_indicators if indicator in content
+            )
+            correction_signals += sum(
+                1 for indicator in correction_indicators if indicator in content
+            )
 
         # Verification score (higher is better)
         verification_score = min(10, verification_signals * 2)
@@ -600,20 +919,28 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
             correction_handling = 3  # Concerning - many corrections needed
 
         # Analyze uncertainty management
-        uncertainty_management_score = min(10,
-            (uncertainty_handling_signals * 3) +
-            (4 if any(s >= 6 for s in confidence_scores) else 2)
+        uncertainty_management_score = min(
+            10,
+            (uncertainty_handling_signals * 3)
+            + (4 if any(s >= 6 for s in confidence_scores) else 2),
         )
 
         # Analyze technical depth appropriateness from summary
         summary_lower = str(summary).lower()
         technical_appropriateness_indicators = [
-            "technical details", "appropriate level", "well explained",
-            "clear technical", "accurate information", "proper guidance"
+            "technical details",
+            "appropriate level",
+            "well explained",
+            "clear technical",
+            "accurate information",
+            "proper guidance",
         ]
 
-        summary_technical_signals = sum(1 for indicator in technical_appropriateness_indicators
-                                      if indicator in summary_lower)
+        summary_technical_signals = sum(
+            1
+            for indicator in technical_appropriateness_indicators
+            if indicator in summary_lower
+        )
 
         # Adjust scores based on summary
         if summary_technical_signals > 0:
@@ -646,8 +973,12 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
             patterns.append("overconfidence_detected")
 
         # Calculate overall accuracy score
-        accuracy_score = (avg_confidence_score + verification_score +
-                         uncertainty_management_score + correction_handling) / 4
+        accuracy_score = (
+            avg_confidence_score
+            + verification_score
+            + uncertainty_management_score
+            + correction_handling
+        ) / 4
 
         return {
             "status": "success",
@@ -664,12 +995,15 @@ def analyze_technical_accuracy_indicators(messages: list[dict], summary: str) ->
                 "uncertainty_handling_signals": uncertainty_handling_signals,
                 "avg_confidence_score": round(avg_confidence_score, 2),
                 "overconfident_messages": overconfident_messages,
-                "summary_technical_signals": summary_technical_signals
-            }
+                "summary_technical_signals": summary_technical_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Technical accuracy analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Technical accuracy analysis failed: {str(e)}",
+        }
 
 
 def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
@@ -699,7 +1033,7 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
                 "directness_score": 0,
                 "resolution_score": 0,
                 "conciseness_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze response directness
@@ -709,14 +1043,23 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
 
             # Direct response indicators
             direct_phrases = [
-                "here's how", "the answer is", "simply", "directly",
-                "to solve this", "the solution", "here's what you need"
+                "here's how",
+                "the answer is",
+                "simply",
+                "directly",
+                "to solve this",
+                "the solution",
+                "here's what you need",
             ]
 
             # Indirect/verbose indicators
             indirect_phrases = [
-                "well, first", "let me start by explaining", "there are many ways",
-                "it's complicated", "this is complex", "there are several factors"
+                "well, first",
+                "let me start by explaining",
+                "there are many ways",
+                "it's complicated",
+                "this is complex",
+                "there are several factors",
             ]
 
             direct_count = sum(1 for phrase in direct_phrases if phrase in content)
@@ -730,7 +1073,9 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
             else:
                 directness_indicators.append(4)
 
-        directness_score = sum(directness_indicators) / max(len(directness_indicators), 1)
+        directness_score = sum(directness_indicators) / max(
+            len(directness_indicators), 1
+        )
 
         # Analyze conciseness
         total_words = 0
@@ -764,7 +1109,7 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
             # Look for repeated phrases
             phrases_used = {}
             for j in range(len(words) - 1):
-                phrase = f"{words[j]} {words[j+1]}"
+                phrase = f"{words[j]} {words[j + 1]}"
                 if phrase in phrases_used:
                     redundancy_score += 1
                 else:
@@ -778,24 +1123,43 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
             else:
                 redundancy_indicators.append(8)
 
-        redundancy_score = sum(redundancy_indicators) / max(len(redundancy_indicators), 1)
+        redundancy_score = sum(redundancy_indicators) / max(
+            len(redundancy_indicators), 1
+        )
 
         # Analyze resolution effectiveness from summary
         summary_lower = str(summary).lower()
         resolution_indicators = [
-            "resolved", "solved", "completed", "addressed", "answered",
-            "clarified", "explained", "helped", "assisted", "fixed"
+            "resolved",
+            "solved",
+            "completed",
+            "addressed",
+            "answered",
+            "clarified",
+            "explained",
+            "helped",
+            "assisted",
+            "fixed",
         ]
 
-        resolution_signals = sum(1 for indicator in resolution_indicators if indicator in summary_lower)
+        resolution_signals = sum(
+            1 for indicator in resolution_indicators if indicator in summary_lower
+        )
 
         # Check for follow-up necessity indicators
         followup_indicators = [
-            "needs follow-up", "requires more", "incomplete", "partially addressed",
-            "still unclear", "more questions", "additional help needed"
+            "needs follow-up",
+            "requires more",
+            "incomplete",
+            "partially addressed",
+            "still unclear",
+            "more questions",
+            "additional help needed",
         ]
 
-        followup_needed = sum(1 for indicator in followup_indicators if indicator in summary_lower)
+        followup_needed = sum(
+            1 for indicator in followup_indicators if indicator in summary_lower
+        )
 
         # Score resolution effectiveness
         resolution_score = min(10, (resolution_signals * 2) - (followup_needed * 2) + 3)
@@ -839,8 +1203,13 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
             patterns.append("extended_conversation")
 
         # Calculate overall efficiency score
-        efficiency_score = (directness_score + conciseness_score +
-                          redundancy_score + resolution_score + efficiency_ratio) / 5
+        efficiency_score = (
+            directness_score
+            + conciseness_score
+            + redundancy_score
+            + resolution_score
+            + efficiency_ratio
+        ) / 5
 
         return {
             "status": "success",
@@ -859,12 +1228,15 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
                 "resolution_signals": resolution_signals,
                 "followup_needed_indicators": followup_needed,
                 "directness_indicators": len(directness_indicators),
-                "redundancy_indicators": len(redundancy_indicators)
-            }
+                "redundancy_indicators": len(redundancy_indicators),
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Efficiency analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Efficiency analysis failed: {str(e)}",
+        }
 
 
 def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> dict:
@@ -893,27 +1265,56 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
                 "sentiment_progression": 0,
                 "engagement_score": 0,
                 "goal_achievement": 0,
-                "patterns": ["no_user_messages"]
+                "patterns": ["no_user_messages"],
             }
 
         # Analyze positive satisfaction indicators
         positive_phrases = [
-            "thank you", "thanks", "helpful", "great", "perfect", "excellent",
-            "amazing", "wonderful", "fantastic", "awesome", "appreciate",
-            "exactly what i needed", "that works", "solved", "fixed"
+            "thank you",
+            "thanks",
+            "helpful",
+            "great",
+            "perfect",
+            "excellent",
+            "amazing",
+            "wonderful",
+            "fantastic",
+            "awesome",
+            "appreciate",
+            "exactly what i needed",
+            "that works",
+            "solved",
+            "fixed",
         ]
 
         # Analyze frustration indicators
         frustration_phrases = [
-            "frustrated", "confused", "doesn't work", "still don't understand",
-            "this is hard", "complicated", "not working", "error", "problem",
-            "stuck", "help me", "i'm lost", "unclear", "not sure"
+            "frustrated",
+            "confused",
+            "doesn't work",
+            "still don't understand",
+            "this is hard",
+            "complicated",
+            "not working",
+            "error",
+            "problem",
+            "stuck",
+            "help me",
+            "i'm lost",
+            "unclear",
+            "not sure",
         ]
 
         # Analyze engagement indicators
         engagement_phrases = [
-            "can you also", "what about", "how do i", "could you explain",
-            "tell me more", "another question", "follow up", "additionally"
+            "can you also",
+            "what about",
+            "how do i",
+            "could you explain",
+            "tell me more",
+            "another question",
+            "follow up",
+            "additionally",
         ]
 
         # Track sentiment progression through conversation
@@ -927,22 +1328,32 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
 
             # Count indicators in this message
             msg_positive = sum(1 for phrase in positive_phrases if phrase in content)
-            msg_frustration = sum(1 for phrase in frustration_phrases if phrase in content)
-            msg_engagement = sum(1 for phrase in engagement_phrases if phrase in content)
+            msg_frustration = sum(
+                1 for phrase in frustration_phrases if phrase in content
+            )
+            msg_engagement = sum(
+                1 for phrase in engagement_phrases if phrase in content
+            )
 
             positive_count += msg_positive
             frustration_count += msg_frustration
             engagement_count += msg_engagement
 
             # Calculate message sentiment score
-            msg_sentiment = (msg_positive * 2) - (msg_frustration * 1.5) + 5  # Base score of 5
+            msg_sentiment = (
+                (msg_positive * 2) - (msg_frustration * 1.5) + 5
+            )  # Base score of 5
             msg_sentiment = max(0, min(10, msg_sentiment))
             sentiment_scores.append(msg_sentiment)
 
         # Calculate sentiment progression (improvement over time is good)
         if len(sentiment_scores) > 1:
-            early_sentiment = sum(sentiment_scores[:len(sentiment_scores)//2]) / max(len(sentiment_scores)//2, 1)
-            late_sentiment = sum(sentiment_scores[len(sentiment_scores)//2:]) / max(len(sentiment_scores) - len(sentiment_scores)//2, 1)
+            early_sentiment = sum(sentiment_scores[: len(sentiment_scores) // 2]) / max(
+                len(sentiment_scores) // 2, 1
+            )
+            late_sentiment = sum(sentiment_scores[len(sentiment_scores) // 2 :]) / max(
+                len(sentiment_scores) - len(sentiment_scores) // 2, 1
+            )
             sentiment_progression = late_sentiment - early_sentiment
         else:
             sentiment_progression = 0
@@ -952,7 +1363,9 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
 
         # Calculate overall satisfaction from indicators
         total_messages = len(user_messages)
-        satisfaction_ratio = (positive_count - frustration_count) / max(total_messages, 1)
+        satisfaction_ratio = (positive_count - frustration_count) / max(
+            total_messages, 1
+        )
         satisfaction_score = max(0, min(10, (satisfaction_ratio * 5) + 5))
 
         # Calculate engagement score
@@ -961,17 +1374,29 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
         # Analyze goal achievement from summary and final messages
         summary_lower = str(summary).lower()
         achievement_indicators = [
-            "goal achieved", "problem solved", "question answered", "issue resolved",
-            "successfully completed", "got what needed", "working now", "understood"
+            "goal achieved",
+            "problem solved",
+            "question answered",
+            "issue resolved",
+            "successfully completed",
+            "got what needed",
+            "working now",
+            "understood",
         ]
 
-        goal_signals = sum(1 for indicator in achievement_indicators if indicator in summary_lower)
+        goal_signals = sum(
+            1 for indicator in achievement_indicators if indicator in summary_lower
+        )
 
         # Check final user messages for satisfaction
         if user_messages:
             final_message = str(user_messages[-1].get("content", "")).lower()
-            final_satisfaction = sum(1 for phrase in positive_phrases if phrase in final_message)
-            final_frustration = sum(1 for phrase in frustration_phrases if phrase in final_message)
+            final_satisfaction = sum(
+                1 for phrase in positive_phrases if phrase in final_message
+            )
+            final_frustration = sum(
+                1 for phrase in frustration_phrases if phrase in final_message
+            )
 
             if final_satisfaction > final_frustration:
                 goal_signals += 2
@@ -1007,8 +1432,12 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
             patterns.append("significant_user_frustration")
 
         # Calculate overall user satisfaction score
-        overall_score = (satisfaction_score + progression_score +
-                        engagement_score + goal_achievement_score) / 4
+        overall_score = (
+            satisfaction_score
+            + progression_score
+            + engagement_score
+            + goal_achievement_score
+        ) / 4
 
         return {
             "status": "success",
@@ -1025,12 +1454,17 @@ def analyze_user_satisfaction_indicators(messages: list[dict], summary: str) -> 
                 "engagement_indicators": engagement_count,
                 "goal_achievement_signals": goal_signals,
                 "sentiment_scores": [round(score, 1) for score in sentiment_scores],
-                "avg_sentiment": round(sum(sentiment_scores) / max(len(sentiment_scores), 1), 1)
-            }
+                "avg_sentiment": round(
+                    sum(sentiment_scores) / max(len(sentiment_scores), 1), 1
+                ),
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"User satisfaction analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"User satisfaction analysis failed: {str(e)}",
+        }
 
 
 def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dict:
@@ -1059,21 +1493,47 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
                 "platform_knowledge_score": 0,
                 "hardware_expertise_score": 0,
                 "system_features_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # First determine if this conversation is about Apple ecosystem topics
-        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
-        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+        all_content = " ".join(
+            [str(msg.get("content", "")).lower() for msg in assistant_messages]
+        )
+        user_content = " ".join(
+            [
+                str(msg.get("content", "")).lower()
+                for msg in [m for m in messages if m.get("role") == "user"]
+            ]
+        )
 
         apple_context_phrases = [
-            "mac", "macos", "ios", "ipad", "iphone", "apple", "safari", "finder",
-            "system preferences", "app store", "xcode", "terminal", "monterey",
-            "ventura", "sonoma", "big sur", "silicon", "t2", "secure enclave"
+            "mac",
+            "macos",
+            "ios",
+            "ipad",
+            "iphone",
+            "apple",
+            "safari",
+            "finder",
+            "system preferences",
+            "app store",
+            "xcode",
+            "terminal",
+            "monterey",
+            "ventura",
+            "sonoma",
+            "big sur",
+            "silicon",
+            "t2",
+            "secure enclave",
         ]
 
-        apple_context_count = sum(1 for phrase in apple_context_phrases
-                                if phrase in all_content or phrase in user_content)
+        apple_context_count = sum(
+            1
+            for phrase in apple_context_phrases
+            if phrase in all_content or phrase in user_content
+        )
 
         # If conversation doesn't seem Apple-focused, use appropriate baseline scoring
         if apple_context_count == 0:
@@ -1085,7 +1545,7 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
                 "system_features_score": 6.0,
                 "ecosystem_thinking_score": 6.0,
                 "patterns": ["non_apple_focused_conversation"],
-                "metrics": {"apple_context_indicators": 0, "analysis_skipped": True}
+                "metrics": {"apple_context_indicators": 0, "analysis_skipped": True},
             }
 
         # Analyze platform knowledge (only when Apple context exists)
@@ -1102,7 +1562,12 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
                     if term.lower() in content:
                         if "version" in str(platform_list):
                             platform_terms_found += 1
-                        elif "hardware" in str(platform_list) or "M1" in term or "M2" in term or "M3" in term:
+                        elif (
+                            "hardware" in str(platform_list)
+                            or "M1" in term
+                            or "M2" in term
+                            or "M3" in term
+                        ):
                             hardware_terms_found += 1
                         elif "system" in str(platform_list) or "Security" in term:
                             system_features_found += 1
@@ -1115,44 +1580,87 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
             content = str(msg.get("content", "")).lower()
 
             # Basic Apple concepts
-            basic_terms = ["macos", "ios", "ipadOS", "safari", "finder", "system preferences", "app store"]
+            basic_terms = [
+                "macos",
+                "ios",
+                "ipadOS",
+                "safari",
+                "finder",
+                "system preferences",
+                "app store",
+            ]
             apple_concepts += sum(1 for term in basic_terms if term in content)
 
             # Advanced Apple concepts
-            advanced_terms = ["system integrity protection", "gatekeeper", "secure boot", "secure enclave",
-                            "activation lock", "filevault", "xprotect", "notarization", "sandboxing"]
+            advanced_terms = [
+                "system integrity protection",
+                "gatekeeper",
+                "secure boot",
+                "secure enclave",
+                "activation lock",
+                "filevault",
+                "xprotect",
+                "notarization",
+                "sandboxing",
+            ]
             advanced_concepts += sum(1 for term in advanced_terms if term in content)
 
         # Analyze summary for Apple ecosystem context
         summary_lower = str(summary).lower()
         summary_apple_indicators = [
-            "apple device", "macos", "ios", "ipad", "macbook", "imac",
-            "apple ecosystem", "apple platform", "apple security"
+            "apple device",
+            "macos",
+            "ios",
+            "ipad",
+            "macbook",
+            "imac",
+            "apple ecosystem",
+            "apple platform",
+            "apple security",
         ]
-        summary_signals = sum(1 for indicator in summary_apple_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1 for indicator in summary_apple_indicators if indicator in summary_lower
+        )
 
         # Calculate scores with baseline (1-10 scale) - baseline is 5 when Apple context exists
         base_score = 5
-        platform_knowledge_score = min(10, base_score + (platform_terms_found * 1.5) + (summary_signals * 0.5))
+        platform_knowledge_score = min(
+            10, base_score + (platform_terms_found * 1.5) + (summary_signals * 0.5)
+        )
         hardware_expertise_score = min(10, base_score + (hardware_terms_found * 1.5))
-        system_features_score = min(10, base_score + (system_features_found * 1.5) + (advanced_concepts * 0.5))
+        system_features_score = min(
+            10, base_score + (system_features_found * 1.5) + (advanced_concepts * 0.5)
+        )
 
         # Best practices and ecosystem thinking
         ecosystem_thinking_indicators = [
-            "apple ecosystem", "integration", "seamless", "unified", "consistent experience",
-            "ecosystem benefits", "apple way", "designed for", "optimized for"
+            "apple ecosystem",
+            "integration",
+            "seamless",
+            "unified",
+            "consistent experience",
+            "ecosystem benefits",
+            "apple way",
+            "designed for",
+            "optimized for",
         ]
 
         ecosystem_thinking = 0
         for msg in assistant_messages:
             content = str(msg.get("content", "")).lower()
-            ecosystem_thinking += sum(1 for indicator in ecosystem_thinking_indicators if indicator in content)
+            ecosystem_thinking += sum(
+                1 for indicator in ecosystem_thinking_indicators if indicator in content
+            )
 
         ecosystem_thinking_score = min(10, base_score + (ecosystem_thinking * 1.5))
 
         # Overall ecosystem expertise score
-        overall_score = (platform_knowledge_score + hardware_expertise_score +
-                        system_features_score + ecosystem_thinking_score) / 4
+        overall_score = (
+            platform_knowledge_score
+            + hardware_expertise_score
+            + system_features_score
+            + ecosystem_thinking_score
+        ) / 4
 
         # Identify patterns
         patterns = []
@@ -1195,12 +1703,15 @@ def analyze_apple_ecosystem_expertise(messages: list[dict], summary: str) -> dic
                 "apple_concepts": apple_concepts,
                 "advanced_concepts": advanced_concepts,
                 "ecosystem_thinking_indicators": ecosystem_thinking,
-                "summary_apple_signals": summary_signals
-            }
+                "summary_apple_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Apple ecosystem analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Apple ecosystem analysis failed: {str(e)}",
+        }
 
 
 def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
@@ -1230,7 +1741,7 @@ def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
                 "jamf_school_score": 0,
                 "jamf_connect_score": 0,
                 "jamf_protect_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze Jamf product mentions and understanding
@@ -1268,17 +1779,32 @@ def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
 
             # Look for appropriate product usage recommendations
             recommendation_phrases = [
-                "jamf pro for", "use jamf school", "jamf connect helps", "jamf protect provides",
-                "recommend jamf", "suggest using", "best suited for", "designed for"
+                "jamf pro for",
+                "use jamf school",
+                "jamf connect helps",
+                "jamf protect provides",
+                "recommend jamf",
+                "suggest using",
+                "best suited for",
+                "designed for",
             ]
-            appropriate_recommendations += sum(1 for phrase in recommendation_phrases if phrase in content)
+            appropriate_recommendations += sum(
+                1 for phrase in recommendation_phrases if phrase in content
+            )
 
             # Look for product comparisons and differentiation
             comparison_phrases = [
-                "jamf pro vs", "difference between", "compared to", "instead of",
-                "better suited", "more appropriate", "specifically designed"
+                "jamf pro vs",
+                "difference between",
+                "compared to",
+                "instead of",
+                "better suited",
+                "more appropriate",
+                "specifically designed",
             ]
-            product_comparisons += sum(1 for phrase in comparison_phrases if phrase in content)
+            product_comparisons += sum(
+                1 for phrase in comparison_phrases if phrase in content
+            )
 
         # Analyze feature depth and accuracy
         feature_depth_indicators = 0
@@ -1289,47 +1815,84 @@ def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
 
             # Look for detailed feature explanations
             depth_indicators = [
-                "configuration profile", "policy settings", "smart group criteria",
-                "prestage enrollment", "self service", "inventory collection",
-                "extension attributes", "api integration"
+                "configuration profile",
+                "policy settings",
+                "smart group criteria",
+                "prestage enrollment",
+                "self service",
+                "inventory collection",
+                "extension attributes",
+                "api integration",
             ]
-            feature_depth_indicators += sum(1 for indicator in depth_indicators if indicator in content)
+            feature_depth_indicators += sum(
+                1 for indicator in depth_indicators if indicator in content
+            )
 
             # Look for configuration guidance
             config_phrases = [
-                "configure", "set up", "implement", "deploy", "customize",
-                "best practices", "recommended settings", "troubleshoot"
+                "configure",
+                "set up",
+                "implement",
+                "deploy",
+                "customize",
+                "best practices",
+                "recommended settings",
+                "troubleshoot",
             ]
-            configuration_guidance += sum(1 for phrase in config_phrases if phrase in content)
+            configuration_guidance += sum(
+                1 for phrase in config_phrases if phrase in content
+            )
 
         # Analyze summary for Jamf product context
         summary_lower = str(summary).lower()
         summary_jamf_indicators = [
-            "jamf pro", "jamf school", "jamf connect", "jamf protect",
-            "jamf solution", "jamf platform", "jamf product"
+            "jamf pro",
+            "jamf school",
+            "jamf connect",
+            "jamf protect",
+            "jamf solution",
+            "jamf platform",
+            "jamf product",
         ]
-        summary_signals = sum(1 for indicator in summary_jamf_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1 for indicator in summary_jamf_indicators if indicator in summary_lower
+        )
 
         # Calculate product-specific scores (1-10 scale)
-        jamf_pro_score = min(10, (jamf_pro_terms * 1.5) + (feature_depth_indicators * 0.5))
+        jamf_pro_score = min(
+            10, (jamf_pro_terms * 1.5) + (feature_depth_indicators * 0.5)
+        )
         jamf_school_score = min(10, jamf_school_terms * 2)
         jamf_connect_score = min(10, jamf_connect_terms * 2)
         jamf_protect_score = min(10, jamf_protect_terms * 2)
 
         # Overall product knowledge score
-        product_breadth = min(4, sum([
-            1 if jamf_pro_terms > 0 else 0,
-            1 if jamf_school_terms > 0 else 0,
-            1 if jamf_connect_terms > 0 else 0,
-            1 if jamf_protect_terms > 0 else 0
-        ]))
+        product_breadth = min(
+            4,
+            sum(
+                [
+                    1 if jamf_pro_terms > 0 else 0,
+                    1 if jamf_school_terms > 0 else 0,
+                    1 if jamf_connect_terms > 0 else 0,
+                    1 if jamf_protect_terms > 0 else 0,
+                ]
+            ),
+        )
 
-        overall_score = ((jamf_pro_score + jamf_school_score + jamf_connect_score + jamf_protect_score) / 4 +
-                        (appropriate_recommendations * 2) +
-                        (product_comparisons * 1.5) +
-                        (configuration_guidance * 0.5) +
-                        (product_breadth * 1.5) +
-                        (summary_signals * 1)) / 6
+        overall_score = (
+            (
+                jamf_pro_score
+                + jamf_school_score
+                + jamf_connect_score
+                + jamf_protect_score
+            )
+            / 4
+            + (appropriate_recommendations * 2)
+            + (product_comparisons * 1.5)
+            + (configuration_guidance * 0.5)
+            + (product_breadth * 1.5)
+            + (summary_signals * 1)
+        ) / 6
 
         overall_score = min(10, overall_score)
 
@@ -1361,7 +1924,9 @@ def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
         elif configuration_guidance == 0:
             patterns.append("lacks_implementation_details")
 
-        total_jamf_terms = jamf_pro_terms + jamf_school_terms + jamf_connect_terms + jamf_protect_terms
+        total_jamf_terms = (
+            jamf_pro_terms + jamf_school_terms + jamf_connect_terms + jamf_protect_terms
+        )
         if total_jamf_terms == 0:
             patterns.append("non_jamf_focused_conversation")
 
@@ -1384,12 +1949,15 @@ def evaluate_jamf_product_knowledge(messages: list[dict], summary: str) -> dict:
                 "feature_depth_indicators": feature_depth_indicators,
                 "configuration_guidance": configuration_guidance,
                 "product_breadth": product_breadth,
-                "summary_jamf_signals": summary_signals
-            }
+                "summary_jamf_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Jamf product knowledge analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Jamf product knowledge analysis failed: {str(e)}",
+        }
 
 
 def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -> dict:
@@ -1419,7 +1987,7 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
                 "solution_clarity_score": 0,
                 "verification_methods_score": 0,
                 "user_empowerment_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze solution clarity and definitiveness
@@ -1431,29 +1999,53 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
 
             # Clear solution language
             clear_solution_phrases = [
-                "the solution is", "here's how to fix", "to resolve this",
-                "the answer is", "you need to", "follow these steps",
-                "this will solve", "to fix this issue", "the problem is"
+                "the solution is",
+                "here's how to fix",
+                "to resolve this",
+                "the answer is",
+                "you need to",
+                "follow these steps",
+                "this will solve",
+                "to fix this issue",
+                "the problem is",
             ]
-            solution_clarity_indicators += sum(1 for phrase in clear_solution_phrases if phrase in content)
+            solution_clarity_indicators += sum(
+                1 for phrase in clear_solution_phrases if phrase in content
+            )
 
             # Definitive vs tentative language
             definitive_phrases = [
-                "this will work", "guaranteed to", "definitely", "certainly will",
-                "this solves", "confirmed solution", "proven method"
+                "this will work",
+                "guaranteed to",
+                "definitely",
+                "certainly will",
+                "this solves",
+                "confirmed solution",
+                "proven method",
             ]
             tentative_phrases = [
-                "might work", "could try", "possibly", "may help",
-                "worth trying", "sometimes works", "might resolve"
+                "might work",
+                "could try",
+                "possibly",
+                "may help",
+                "worth trying",
+                "sometimes works",
+                "might resolve",
             ]
 
-            definitive_count = sum(1 for phrase in definitive_phrases if phrase in content)
-            tentative_count = sum(1 for phrase in tentative_phrases if phrase in content)
+            definitive_count = sum(
+                1 for phrase in definitive_phrases if phrase in content
+            )
+            tentative_count = sum(
+                1 for phrase in tentative_phrases if phrase in content
+            )
 
             if definitive_count > tentative_count:
                 definitive_solutions += 1
 
-        solution_clarity_score = min(10, (solution_clarity_indicators * 2) + (definitive_solutions * 1.5))
+        solution_clarity_score = min(
+            10, (solution_clarity_indicators * 2) + (definitive_solutions * 1.5)
+        )
 
         # Analyze verification and testing guidance
         verification_methods = 0
@@ -1464,19 +2056,37 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
 
             # Verification methods
             verification_phrases = [
-                "test this", "verify", "check if", "confirm that", "validate",
-                "make sure", "ensure that", "double-check", "try this"
+                "test this",
+                "verify",
+                "check if",
+                "confirm that",
+                "validate",
+                "make sure",
+                "ensure that",
+                "double-check",
+                "try this",
             ]
-            verification_methods += sum(1 for phrase in verification_phrases if phrase in content)
+            verification_methods += sum(
+                1 for phrase in verification_phrases if phrase in content
+            )
 
             # Testing and validation guidance
             testing_phrases = [
-                "run a test", "test the configuration", "check the logs",
-                "monitor for", "observe the", "look for", "verify in"
+                "run a test",
+                "test the configuration",
+                "check the logs",
+                "monitor for",
+                "observe the",
+                "look for",
+                "verify in",
             ]
-            testing_guidance += sum(1 for phrase in testing_phrases if phrase in content)
+            testing_guidance += sum(
+                1 for phrase in testing_phrases if phrase in content
+            )
 
-        verification_score = min(10, (verification_methods * 1.5) + (testing_guidance * 2))
+        verification_score = min(
+            10, (verification_methods * 1.5) + (testing_guidance * 2)
+        )
 
         # Analyze user empowerment and education
         empowerment_indicators = 0
@@ -1487,21 +2097,40 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
 
             # Empowerment language
             empowerment_phrases = [
-                "now you can", "this allows you to", "you'll be able to",
-                "in the future", "next time", "remember to", "keep in mind",
-                "understanding this", "now you know", "this way you"
+                "now you can",
+                "this allows you to",
+                "you'll be able to",
+                "in the future",
+                "next time",
+                "remember to",
+                "keep in mind",
+                "understanding this",
+                "now you know",
+                "this way you",
             ]
-            empowerment_indicators += sum(1 for phrase in empowerment_phrases if phrase in content)
+            empowerment_indicators += sum(
+                1 for phrase in empowerment_phrases if phrase in content
+            )
 
             # Educational explanations
             educational_phrases = [
-                "this works because", "the reason is", "what happens is",
-                "behind the scenes", "this ensures", "the purpose of",
-                "understanding", "explanation", "how it works"
+                "this works because",
+                "the reason is",
+                "what happens is",
+                "behind the scenes",
+                "this ensures",
+                "the purpose of",
+                "understanding",
+                "explanation",
+                "how it works",
             ]
-            educational_content += sum(1 for phrase in educational_phrases if phrase in content)
+            educational_content += sum(
+                1 for phrase in educational_phrases if phrase in content
+            )
 
-        empowerment_score = min(10, (empowerment_indicators * 2) + (educational_content * 1.5))
+        empowerment_score = min(
+            10, (empowerment_indicators * 2) + (educational_content * 1.5)
+        )
 
         # Analyze problem root cause identification
         root_cause_analysis = 0
@@ -1512,40 +2141,76 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
 
             # Root cause identification
             root_cause_phrases = [
-                "the root cause", "this happens because", "the underlying issue",
-                "the real problem", "what's actually happening", "the source of"
+                "the root cause",
+                "this happens because",
+                "the underlying issue",
+                "the real problem",
+                "what's actually happening",
+                "the source of",
             ]
-            root_cause_analysis += sum(1 for phrase in root_cause_phrases if phrase in content)
+            root_cause_analysis += sum(
+                1 for phrase in root_cause_phrases if phrase in content
+            )
 
             # Preventive measures
             preventive_phrases = [
-                "to prevent this", "avoid this by", "in the future",
-                "best practice", "recommended approach", "to avoid"
+                "to prevent this",
+                "avoid this by",
+                "in the future",
+                "best practice",
+                "recommended approach",
+                "to avoid",
             ]
-            preventive_guidance += sum(1 for phrase in preventive_phrases if phrase in content)
+            preventive_guidance += sum(
+                1 for phrase in preventive_phrases if phrase in content
+            )
 
-        root_cause_score = min(10, (root_cause_analysis * 3) + (preventive_guidance * 2))
+        root_cause_score = min(
+            10, (root_cause_analysis * 3) + (preventive_guidance * 2)
+        )
 
         # Analyze summary for resolution indicators
         summary_lower = str(summary).lower()
         resolution_summary_indicators = [
-            "problem resolved", "issue fixed", "solution provided", "successfully addressed",
-            "user satisfied", "working solution", "effective resolution", "problem solved"
+            "problem resolved",
+            "issue fixed",
+            "solution provided",
+            "successfully addressed",
+            "user satisfied",
+            "working solution",
+            "effective resolution",
+            "problem solved",
         ]
 
         confidence_summary_indicators = [
-            "clear solution", "definitive answer", "confident resolution",
-            "proven method", "reliable fix", "tested solution"
+            "clear solution",
+            "definitive answer",
+            "confident resolution",
+            "proven method",
+            "reliable fix",
+            "tested solution",
         ]
 
-        summary_resolution_signals = sum(1 for indicator in resolution_summary_indicators if indicator in summary_lower)
-        summary_confidence_signals = sum(1 for indicator in confidence_summary_indicators if indicator in summary_lower)
+        summary_resolution_signals = sum(
+            1
+            for indicator in resolution_summary_indicators
+            if indicator in summary_lower
+        )
+        summary_confidence_signals = sum(
+            1
+            for indicator in confidence_summary_indicators
+            if indicator in summary_lower
+        )
 
         # Adjust scores based on summary insights
         if summary_resolution_signals > 0:
-            solution_clarity_score = min(10, solution_clarity_score + summary_resolution_signals)
+            solution_clarity_score = min(
+                10, solution_clarity_score + summary_resolution_signals
+            )
         if summary_confidence_signals > 0:
-            verification_score = min(10, verification_score + summary_confidence_signals)
+            verification_score = min(
+                10, verification_score + summary_confidence_signals
+            )
 
         # Identify resolution confidence patterns
         patterns = []
@@ -1576,8 +2241,12 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
             patterns.append("uncertain_solution_approach")
 
         # Calculate overall resolution confidence score
-        resolution_confidence_score = (solution_clarity_score + verification_score +
-                                     empowerment_score + root_cause_score) / 4
+        resolution_confidence_score = (
+            solution_clarity_score
+            + verification_score
+            + empowerment_score
+            + root_cause_score
+        ) / 4
 
         return {
             "status": "success",
@@ -1598,12 +2267,15 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
                 "root_cause_analysis": root_cause_analysis,
                 "preventive_guidance": preventive_guidance,
                 "summary_resolution_signals": summary_resolution_signals,
-                "summary_confidence_signals": summary_confidence_signals
-            }
+                "summary_confidence_signals": summary_confidence_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Problem resolution confidence analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Problem resolution confidence analysis failed: {str(e)}",
+        }
 
 
 def assess_mdm_device_management_concepts(messages: list[dict], summary: str) -> dict:
@@ -1632,21 +2304,45 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
                 "enrollment_knowledge_score": 0,
                 "configuration_profile_score": 0,
                 "device_policy_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # First determine if this conversation is about MDM/device management topics
-        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
-        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+        all_content = " ".join(
+            [str(msg.get("content", "")).lower() for msg in assistant_messages]
+        )
+        user_content = " ".join(
+            [
+                str(msg.get("content", "")).lower()
+                for msg in [m for m in messages if m.get("role") == "user"]
+            ]
+        )
 
         mdm_context_phrases = [
-            "mdm", "device management", "enrollment", "configuration profile", "policy",
-            "mobile device", "device", "profile", "prestage", "dep", "ade", "inventory",
-            "self service", "jamf pro", "computer", "supervised", "management"
+            "mdm",
+            "device management",
+            "enrollment",
+            "configuration profile",
+            "policy",
+            "mobile device",
+            "device",
+            "profile",
+            "prestage",
+            "dep",
+            "ade",
+            "inventory",
+            "self service",
+            "jamf pro",
+            "computer",
+            "supervised",
+            "management",
         ]
 
-        mdm_context_count = sum(1 for phrase in mdm_context_phrases
-                              if phrase in all_content or phrase in user_content)
+        mdm_context_count = sum(
+            1
+            for phrase in mdm_context_phrases
+            if phrase in all_content or phrase in user_content
+        )
 
         # If conversation doesn't seem MDM-focused, use appropriate baseline scoring
         if mdm_context_count == 0:
@@ -1659,7 +2355,7 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
                 "advanced_concepts_score": 6.0,
                 "lifecycle_management_score": 6.0,
                 "patterns": ["non_mdm_focused_conversation"],
-                "metrics": {"mdm_context_indicators": 0, "analysis_skipped": True}
+                "metrics": {"mdm_context_indicators": 0, "analysis_skipped": True},
             }
 
         # Analyze enrollment method knowledge (only when MDM context exists)
@@ -1676,15 +2372,28 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
 
             # Look for enrollment method explanations
             enrollment_explanation_phrases = [
-                "automated device enrollment", "device enrollment program", "manual enrollment",
-                "user initiated enrollment", "prestage enrollment", "zero-touch deployment",
-                "supervised devices", "unsupervised devices", "enrollment profile"
+                "automated device enrollment",
+                "device enrollment program",
+                "manual enrollment",
+                "user initiated enrollment",
+                "prestage enrollment",
+                "zero-touch deployment",
+                "supervised devices",
+                "unsupervised devices",
+                "enrollment profile",
             ]
-            enrollment_method_explanations += sum(1 for phrase in enrollment_explanation_phrases if phrase in content)
+            enrollment_method_explanations += sum(
+                1 for phrase in enrollment_explanation_phrases if phrase in content
+            )
 
         # Apply contextual scoring with baseline of 5 when MDM context exists
         base_score = 5
-        enrollment_knowledge_score = min(10, base_score + (enrollment_terms_found * 1) + (enrollment_method_explanations * 1.5))
+        enrollment_knowledge_score = min(
+            10,
+            base_score
+            + (enrollment_terms_found * 1)
+            + (enrollment_method_explanations * 1.5),
+        )
 
         # Analyze configuration profile expertise
         config_profile_terms = 0
@@ -1695,19 +2404,40 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
 
             # Configuration profile concepts
             config_profile_phrases = [
-                "configuration profile", "payload", "restriction", "settings payload",
-                "profile distribution", "device settings", "user settings", "system configuration"
+                "configuration profile",
+                "payload",
+                "restriction",
+                "settings payload",
+                "profile distribution",
+                "device settings",
+                "user settings",
+                "system configuration",
             ]
-            config_profile_terms += sum(1 for phrase in config_profile_phrases if phrase in content)
+            config_profile_terms += sum(
+                1 for phrase in config_profile_phrases if phrase in content
+            )
 
             # Implementation guidance for profiles
             implementation_phrases = [
-                "deploy profile", "install profile", "profile scope", "profile assignment",
-                "push profile", "remove profile", "update profile", "profile validation"
+                "deploy profile",
+                "install profile",
+                "profile scope",
+                "profile assignment",
+                "push profile",
+                "remove profile",
+                "update profile",
+                "profile validation",
             ]
-            profile_implementation_guidance += sum(1 for phrase in implementation_phrases if phrase in content)
+            profile_implementation_guidance += sum(
+                1 for phrase in implementation_phrases if phrase in content
+            )
 
-        config_profile_score = min(10, base_score + (config_profile_terms * 1.5) + (profile_implementation_guidance * 1))
+        config_profile_score = min(
+            10,
+            base_score
+            + (config_profile_terms * 1.5)
+            + (profile_implementation_guidance * 1),
+        )
 
         # Analyze device policy and management understanding
         policy_terms = 0
@@ -1718,19 +2448,34 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
 
             # Policy and management concepts
             policy_phrases = [
-                "device policy", "compliance policy", "security policy", "software update policy",
-                "app deployment", "inventory collection", "remote commands", "device compliance"
+                "device policy",
+                "compliance policy",
+                "security policy",
+                "software update policy",
+                "app deployment",
+                "inventory collection",
+                "remote commands",
+                "device compliance",
             ]
             policy_terms += sum(1 for phrase in policy_phrases if phrase in content)
 
             # Management best practices
             best_practice_phrases = [
-                "best practice", "recommended approach", "security considerations",
-                "deployment strategy", "rollout plan", "testing phase", "pilot group"
+                "best practice",
+                "recommended approach",
+                "security considerations",
+                "deployment strategy",
+                "rollout plan",
+                "testing phase",
+                "pilot group",
             ]
-            management_best_practices += sum(1 for phrase in best_practice_phrases if phrase in content)
+            management_best_practices += sum(
+                1 for phrase in best_practice_phrases if phrase in content
+            )
 
-        policy_score = min(10, base_score + (policy_terms * 1.5) + (management_best_practices * 1))
+        policy_score = min(
+            10, base_score + (policy_terms * 1.5) + (management_best_practices * 1)
+        )
 
         # Analyze advanced MDM concepts
         advanced_concepts = 0
@@ -1741,19 +2486,36 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
 
             # Advanced MDM concepts
             advanced_mdm_phrases = [
-                "scep certificate", "device attestation", "push certificate", "mdm payload",
-                "device channel", "user channel", "declarative management", "bootstrap token"
+                "scep certificate",
+                "device attestation",
+                "push certificate",
+                "mdm payload",
+                "device channel",
+                "user channel",
+                "declarative management",
+                "bootstrap token",
             ]
-            advanced_concepts += sum(1 for phrase in advanced_mdm_phrases if phrase in content)
+            advanced_concepts += sum(
+                1 for phrase in advanced_mdm_phrases if phrase in content
+            )
 
             # Troubleshooting knowledge
             troubleshooting_phrases = [
-                "enrollment issues", "profile installation failed", "device not responding",
-                "push notification", "certificate renewal", "mdm logs", "device communication"
+                "enrollment issues",
+                "profile installation failed",
+                "device not responding",
+                "push notification",
+                "certificate renewal",
+                "mdm logs",
+                "device communication",
             ]
-            troubleshooting_knowledge += sum(1 for phrase in troubleshooting_phrases if phrase in content)
+            troubleshooting_knowledge += sum(
+                1 for phrase in troubleshooting_phrases if phrase in content
+            )
 
-        advanced_score = min(10, base_score + (advanced_concepts * 1.5) + (troubleshooting_knowledge * 1))
+        advanced_score = min(
+            10, base_score + (advanced_concepts * 1.5) + (troubleshooting_knowledge * 1)
+        )
 
         # Analyze device lifecycle management
         lifecycle_knowledge = 0
@@ -1764,31 +2526,56 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
 
             # Device lifecycle management
             lifecycle_phrases = [
-                "device provisioning", "device retirement", "device refresh", "migration strategy",
-                "backup and restore", "device replacement", "end of life", "device handoff"
+                "device provisioning",
+                "device retirement",
+                "device refresh",
+                "migration strategy",
+                "backup and restore",
+                "device replacement",
+                "end of life",
+                "device handoff",
             ]
-            lifecycle_knowledge += sum(1 for phrase in lifecycle_phrases if phrase in content)
+            lifecycle_knowledge += sum(
+                1 for phrase in lifecycle_phrases if phrase in content
+            )
 
             # Security-focused management
             security_phrases = [
-                "device encryption", "passcode requirements", "remote wipe", "lost mode",
-                "activation lock", "supervised mode", "security restrictions", "compliance monitoring"
+                "device encryption",
+                "passcode requirements",
+                "remote wipe",
+                "lost mode",
+                "activation lock",
+                "supervised mode",
+                "security restrictions",
+                "compliance monitoring",
             ]
             security_focus += sum(1 for phrase in security_phrases if phrase in content)
 
-        lifecycle_score = min(10, base_score + (lifecycle_knowledge * 1.5) + (security_focus * 1))
+        lifecycle_score = min(
+            10, base_score + (lifecycle_knowledge * 1.5) + (security_focus * 1)
+        )
 
         # Analyze summary for MDM context
         summary_lower = str(summary).lower()
         mdm_summary_indicators = [
-            "device management", "mobile device", "mdm", "configuration profile",
-            "device enrollment", "device policy", "jamf pro management"
+            "device management",
+            "mobile device",
+            "mdm",
+            "configuration profile",
+            "device enrollment",
+            "device policy",
+            "jamf pro management",
         ]
-        summary_signals = sum(1 for indicator in mdm_summary_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1 for indicator in mdm_summary_indicators if indicator in summary_lower
+        )
 
         # Adjust scores based on summary insights
         if summary_signals > 0:
-            enrollment_knowledge_score = min(10, enrollment_knowledge_score + summary_signals * 0.5)
+            enrollment_knowledge_score = min(
+                10, enrollment_knowledge_score + summary_signals * 0.5
+            )
             config_profile_score = min(10, config_profile_score + summary_signals * 0.5)
 
         # Identify MDM expertise patterns
@@ -1827,17 +2614,29 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
         for msg in assistant_messages:
             content = str(msg.get("content", "")).lower()
             integration_phrases = [
-                "active directory", "ldap integration", "sso integration", "api integration",
-                "third party integration", "directory services", "identity provider"
+                "active directory",
+                "ldap integration",
+                "sso integration",
+                "api integration",
+                "third party integration",
+                "directory services",
+                "identity provider",
             ]
-            integration_knowledge += sum(1 for phrase in integration_phrases if phrase in content)
+            integration_knowledge += sum(
+                1 for phrase in integration_phrases if phrase in content
+            )
 
         if integration_knowledge >= 2:
             patterns.append("integration_awareness")
 
         # Calculate overall MDM expertise score
-        mdm_expertise_score = (enrollment_knowledge_score + config_profile_score +
-                              policy_score + advanced_score + lifecycle_score) / 5
+        mdm_expertise_score = (
+            enrollment_knowledge_score
+            + config_profile_score
+            + policy_score
+            + advanced_score
+            + lifecycle_score
+        ) / 5
 
         return {
             "status": "success",
@@ -1860,12 +2659,15 @@ def assess_mdm_device_management_concepts(messages: list[dict], summary: str) ->
                 "lifecycle_knowledge": lifecycle_knowledge,
                 "security_focus": security_focus,
                 "integration_knowledge": integration_knowledge,
-                "summary_mdm_signals": summary_signals
-            }
+                "summary_mdm_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"MDM device management analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"MDM device management analysis failed: {str(e)}",
+        }
 
 
 def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> dict:
@@ -1894,22 +2696,47 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 "framework_knowledge_score": 0,
                 "zero_trust_score": 0,
                 "security_implementation_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # First determine if this conversation is about security/compliance topics
         security_context_indicators = []
-        all_content = " ".join([str(msg.get("content", "")).lower() for msg in assistant_messages])
-        user_content = " ".join([str(msg.get("content", "")).lower() for msg in [m for m in messages if m.get("role") == "user"]])
+        all_content = " ".join(
+            [str(msg.get("content", "")).lower() for msg in assistant_messages]
+        )
+        user_content = " ".join(
+            [
+                str(msg.get("content", "")).lower()
+                for msg in [m for m in messages if m.get("role") == "user"]
+            ]
+        )
 
         security_context_phrases = [
-            "security", "compliance", "audit", "encrypt", "certificate", "access control",
-            "policy", "permission", "authentication", "authorization", "vulnerability",
-            "threat", "risk", "privacy", "gdpr", "hipaa", "soc2", "framework"
+            "security",
+            "compliance",
+            "audit",
+            "encrypt",
+            "certificate",
+            "access control",
+            "policy",
+            "permission",
+            "authentication",
+            "authorization",
+            "vulnerability",
+            "threat",
+            "risk",
+            "privacy",
+            "gdpr",
+            "hipaa",
+            "soc2",
+            "framework",
         ]
 
-        security_context_count = sum(1 for phrase in security_context_phrases
-                                   if phrase in all_content or phrase in user_content)
+        security_context_count = sum(
+            1
+            for phrase in security_context_phrases
+            if phrase in all_content or phrase in user_content
+        )
 
         # If conversation doesn't seem security-focused, use appropriate baseline scoring
         if security_context_count == 0:
@@ -1923,7 +2750,7 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 "compliance_score": 6.0,
                 "privacy_score": 6.0,
                 "patterns": ["non_security_focused_conversation"],
-                "metrics": {"security_context_indicators": 0, "analysis_skipped": True}
+                "metrics": {"security_context_indicators": 0, "analysis_skipped": True},
             }
 
         # Analyze security framework knowledge (only when security context exists)
@@ -1940,15 +2767,26 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
 
             # Look for framework explanations and applications
             framework_explanation_phrases = [
-                "zero trust architecture", "defense in depth", "least privilege access",
-                "compliance framework", "security standard", "regulatory requirement",
-                "audit requirement", "security assessment", "risk assessment"
+                "zero trust architecture",
+                "defense in depth",
+                "least privilege access",
+                "compliance framework",
+                "security standard",
+                "regulatory requirement",
+                "audit requirement",
+                "security assessment",
+                "risk assessment",
             ]
-            framework_explanations += sum(1 for phrase in framework_explanation_phrases if phrase in content)
+            framework_explanations += sum(
+                1 for phrase in framework_explanation_phrases if phrase in content
+            )
 
         # Apply contextual scoring - baseline is 5 (neutral) when security topics are present but not deeply discussed
         base_score = 5
-        framework_knowledge_score = min(10, base_score + (framework_terms_found * 1.5) + (framework_explanations * 1))
+        framework_knowledge_score = min(
+            10,
+            base_score + (framework_terms_found * 1.5) + (framework_explanations * 1),
+        )
 
         # Analyze Zero Trust principles understanding
         zero_trust_concepts = 0
@@ -1959,21 +2797,39 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
 
             # Zero Trust concepts
             zero_trust_phrases = [
-                "zero trust", "never trust always verify", "verify explicitly",
-                "principle of least privilege", "assume breach", "continuous verification",
-                "identity verification", "device compliance", "conditional access"
+                "zero trust",
+                "never trust always verify",
+                "verify explicitly",
+                "principle of least privilege",
+                "assume breach",
+                "continuous verification",
+                "identity verification",
+                "device compliance",
+                "conditional access",
             ]
-            zero_trust_concepts += sum(1 for phrase in zero_trust_phrases if phrase in content)
+            zero_trust_concepts += sum(
+                1 for phrase in zero_trust_phrases if phrase in content
+            )
 
             # Zero Trust implementation guidance
             implementation_phrases = [
-                "identity-based security", "device-based access", "network segmentation",
-                "micro-segmentation", "continuous monitoring", "risk-based authentication",
-                "adaptive access controls", "security posture assessment"
+                "identity-based security",
+                "device-based access",
+                "network segmentation",
+                "micro-segmentation",
+                "continuous monitoring",
+                "risk-based authentication",
+                "adaptive access controls",
+                "security posture assessment",
             ]
-            zero_trust_implementation += sum(1 for phrase in implementation_phrases if phrase in content)
+            zero_trust_implementation += sum(
+                1 for phrase in implementation_phrases if phrase in content
+            )
 
-        zero_trust_score = min(10, base_score + (zero_trust_concepts * 1.5) + (zero_trust_implementation * 1))
+        zero_trust_score = min(
+            10,
+            base_score + (zero_trust_concepts * 1.5) + (zero_trust_implementation * 1),
+        )
 
         # Analyze Jamf-specific security guidance
         jamf_security_terms = 0
@@ -1992,7 +2848,10 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 if term.lower() in content:
                     apple_security_knowledge += 1
 
-        jamf_security_score = min(10, base_score + (jamf_security_terms * 1.5) + (apple_security_knowledge * 1))
+        jamf_security_score = min(
+            10,
+            base_score + (jamf_security_terms * 1.5) + (apple_security_knowledge * 1),
+        )
 
         # Analyze security implementation recommendations
         implementation_guidance = 0
@@ -2003,21 +2862,37 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
 
             # Security implementation guidance
             implementation_phrases = [
-                "security best practice", "recommended security", "secure configuration",
-                "security policy", "access control", "encryption requirement",
-                "certificate management", "secure deployment", "hardening guide"
+                "security best practice",
+                "recommended security",
+                "secure configuration",
+                "security policy",
+                "access control",
+                "encryption requirement",
+                "certificate management",
+                "secure deployment",
+                "hardening guide",
             ]
-            implementation_guidance += sum(1 for phrase in implementation_phrases if phrase in content)
+            implementation_guidance += sum(
+                1 for phrase in implementation_phrases if phrase in content
+            )
 
             # Risk mitigation strategies
             risk_phrases = [
-                "mitigate risk", "reduce exposure", "security risk", "vulnerability",
-                "threat assessment", "risk assessment", "security controls",
-                "compensating controls", "defense in depth"
+                "mitigate risk",
+                "reduce exposure",
+                "security risk",
+                "vulnerability",
+                "threat assessment",
+                "risk assessment",
+                "security controls",
+                "compensating controls",
+                "defense in depth",
             ]
             risk_mitigation += sum(1 for phrase in risk_phrases if phrase in content)
 
-        implementation_score = min(10, base_score + (implementation_guidance * 1.5) + (risk_mitigation * 1))
+        implementation_score = min(
+            10, base_score + (implementation_guidance * 1.5) + (risk_mitigation * 1)
+        )
 
         # Analyze compliance-specific guidance
         compliance_knowledge = 0
@@ -2028,21 +2903,36 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
 
             # Compliance terminology and requirements
             compliance_phrases = [
-                "compliance requirement", "regulatory compliance", "audit trail",
-                "documentation requirement", "policy enforcement", "compliance monitoring",
-                "compliance reporting", "evidence collection", "compliance gap"
+                "compliance requirement",
+                "regulatory compliance",
+                "audit trail",
+                "documentation requirement",
+                "policy enforcement",
+                "compliance monitoring",
+                "compliance reporting",
+                "evidence collection",
+                "compliance gap",
             ]
-            compliance_knowledge += sum(1 for phrase in compliance_phrases if phrase in content)
+            compliance_knowledge += sum(
+                1 for phrase in compliance_phrases if phrase in content
+            )
 
             # Audit and documentation guidance
             audit_phrases = [
-                "audit preparation", "compliance documentation", "evidence gathering",
-                "audit report", "compliance assessment", "gap analysis",
-                "remediation plan", "compliance dashboard"
+                "audit preparation",
+                "compliance documentation",
+                "evidence gathering",
+                "audit report",
+                "compliance assessment",
+                "gap analysis",
+                "remediation plan",
+                "compliance dashboard",
             ]
             audit_preparation += sum(1 for phrase in audit_phrases if phrase in content)
 
-        compliance_score = min(10, base_score + (compliance_knowledge * 1.5) + (audit_preparation * 1))
+        compliance_score = min(
+            10, base_score + (compliance_knowledge * 1.5) + (audit_preparation * 1)
+        )
 
         # Analyze data protection and privacy guidance
         data_protection = 0
@@ -2053,33 +2943,61 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
 
             # Data protection concepts
             data_protection_phrases = [
-                "data protection", "data encryption", "data classification",
-                "data loss prevention", "data retention", "data governance",
-                "personal data", "sensitive data", "data privacy"
+                "data protection",
+                "data encryption",
+                "data classification",
+                "data loss prevention",
+                "data retention",
+                "data governance",
+                "personal data",
+                "sensitive data",
+                "data privacy",
             ]
-            data_protection += sum(1 for phrase in data_protection_phrases if phrase in content)
+            data_protection += sum(
+                1 for phrase in data_protection_phrases if phrase in content
+            )
 
             # Privacy controls
             privacy_phrases = [
-                "privacy control", "anonymization", "pseudonymization",
-                "consent management", "data subject rights", "privacy impact",
-                "privacy by design", "privacy policy"
+                "privacy control",
+                "anonymization",
+                "pseudonymization",
+                "consent management",
+                "data subject rights",
+                "privacy impact",
+                "privacy by design",
+                "privacy policy",
             ]
-            privacy_controls += sum(1 for phrase in privacy_phrases if phrase in content)
+            privacy_controls += sum(
+                1 for phrase in privacy_phrases if phrase in content
+            )
 
-        privacy_score = min(10, base_score + (data_protection * 1.5) + (privacy_controls * 1.5))
+        privacy_score = min(
+            10, base_score + (data_protection * 1.5) + (privacy_controls * 1.5)
+        )
 
         # Analyze summary for security context
         summary_lower = str(summary).lower()
         security_summary_indicators = [
-            "security", "compliance", "zero trust", "framework", "audit",
-            "risk", "encryption", "access control", "security policy"
+            "security",
+            "compliance",
+            "zero trust",
+            "framework",
+            "audit",
+            "risk",
+            "encryption",
+            "access control",
+            "security policy",
         ]
-        summary_signals = sum(1 for indicator in security_summary_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1 for indicator in security_summary_indicators if indicator in summary_lower
+        )
 
         # Adjust scores based on summary insights
         if summary_signals > 0:
-            framework_knowledge_score = min(10, framework_knowledge_score + summary_signals * 0.3)
+            framework_knowledge_score = min(
+                10, framework_knowledge_score + summary_signals * 0.3
+            )
             implementation_score = min(10, implementation_score + summary_signals * 0.3)
 
         # Identify security compliance patterns
@@ -2114,17 +3032,26 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             patterns.append("privacy_conscious")
 
         # Check for holistic security approach
-        total_security_knowledge = (framework_terms_found + zero_trust_concepts +
-                                  jamf_security_terms + apple_security_knowledge)
+        total_security_knowledge = (
+            framework_terms_found
+            + zero_trust_concepts
+            + jamf_security_terms
+            + apple_security_knowledge
+        )
         if total_security_knowledge >= 5:
             patterns.append("comprehensive_security_approach")
         elif total_security_knowledge <= 1:
             patterns.append("narrow_security_focus")
 
         # Calculate overall security compliance score
-        security_compliance_score = (framework_knowledge_score + zero_trust_score +
-                                   jamf_security_score + implementation_score +
-                                   compliance_score + privacy_score) / 6
+        security_compliance_score = (
+            framework_knowledge_score
+            + zero_trust_score
+            + jamf_security_score
+            + implementation_score
+            + compliance_score
+            + privacy_score
+        ) / 6
 
         return {
             "status": "success",
@@ -2149,12 +3076,15 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
                 "audit_preparation": audit_preparation,
                 "data_protection": data_protection,
                 "privacy_controls": privacy_controls,
-                "summary_security_signals": summary_signals
-            }
+                "summary_security_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Security compliance analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Security compliance analysis failed: {str(e)}",
+        }
 
 
 def assess_implementation_support_quality(messages: list[dict], summary: str) -> dict:
@@ -2183,7 +3113,7 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
                 "step_by_step_guidance_score": 0,
                 "risk_mitigation_score": 0,
                 "change_management_score": 0,
-                "patterns": ["no_assistant_messages"]
+                "patterns": ["no_assistant_messages"],
             }
 
         # Analyze step-by-step guidance quality
@@ -2196,26 +3126,59 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Step-by-step indicators
             step_phrases = [
-                "step 1", "step 2", "step 3", "first", "second", "third", "next",
-                "then", "after", "before", "finally", "lastly", "step by step"
+                "step 1",
+                "step 2",
+                "step 3",
+                "first",
+                "second",
+                "third",
+                "next",
+                "then",
+                "after",
+                "before",
+                "finally",
+                "lastly",
+                "step by step",
             ]
             step_indicators += sum(1 for phrase in step_phrases if phrase in content)
 
             # Structured guidance patterns
             structure_phrases = [
-                "here's how", "follow these steps", "process is", "procedure",
-                "workflow", "checklist", "instructions", "guide", "walkthrough"
+                "here's how",
+                "follow these steps",
+                "process is",
+                "procedure",
+                "workflow",
+                "checklist",
+                "instructions",
+                "guide",
+                "walkthrough",
             ]
-            structured_guidance += sum(1 for phrase in structure_phrases if phrase in content)
+            structured_guidance += sum(
+                1 for phrase in structure_phrases if phrase in content
+            )
 
             # Sequential language
             sequential_phrases = [
-                "once you", "after you", "when you complete", "upon completion",
-                "before proceeding", "ensure that", "verify that", "confirm"
+                "once you",
+                "after you",
+                "when you complete",
+                "upon completion",
+                "before proceeding",
+                "ensure that",
+                "verify that",
+                "confirm",
             ]
-            sequential_language += sum(1 for phrase in sequential_phrases if phrase in content)
+            sequential_language += sum(
+                1 for phrase in sequential_phrases if phrase in content
+            )
 
-        step_by_step_score = min(10, (step_indicators * 1.5) + (structured_guidance * 2) + (sequential_language * 1))
+        step_by_step_score = min(
+            10,
+            (step_indicators * 1.5)
+            + (structured_guidance * 2)
+            + (sequential_language * 1),
+        )
 
         # Analyze risk mitigation and preparation guidance
         risk_identification = 0
@@ -2227,26 +3190,58 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Risk identification
             risk_phrases = [
-                "potential risk", "be aware", "caution", "warning", "important note",
-                "risk of", "may cause", "could result", "be careful", "consider"
+                "potential risk",
+                "be aware",
+                "caution",
+                "warning",
+                "important note",
+                "risk of",
+                "may cause",
+                "could result",
+                "be careful",
+                "consider",
             ]
-            risk_identification += sum(1 for phrase in risk_phrases if phrase in content)
+            risk_identification += sum(
+                1 for phrase in risk_phrases if phrase in content
+            )
 
             # Mitigation strategies
             mitigation_phrases = [
-                "to avoid", "prevent", "mitigate", "reduce risk", "safeguard",
-                "backup first", "test environment", "pilot group", "rollback plan"
+                "to avoid",
+                "prevent",
+                "mitigate",
+                "reduce risk",
+                "safeguard",
+                "backup first",
+                "test environment",
+                "pilot group",
+                "rollback plan",
             ]
-            mitigation_strategies += sum(1 for phrase in mitigation_phrases if phrase in content)
+            mitigation_strategies += sum(
+                1 for phrase in mitigation_phrases if phrase in content
+            )
 
             # Preparation guidance
             prep_phrases = [
-                "before you start", "preparation", "prerequisites", "requirements",
-                "ensure you have", "make sure", "verify access", "check that"
+                "before you start",
+                "preparation",
+                "prerequisites",
+                "requirements",
+                "ensure you have",
+                "make sure",
+                "verify access",
+                "check that",
             ]
-            preparation_guidance += sum(1 for phrase in prep_phrases if phrase in content)
+            preparation_guidance += sum(
+                1 for phrase in prep_phrases if phrase in content
+            )
 
-        risk_mitigation_score = min(10, (risk_identification * 2) + (mitigation_strategies * 2.5) + (preparation_guidance * 1.5))
+        risk_mitigation_score = min(
+            10,
+            (risk_identification * 2)
+            + (mitigation_strategies * 2.5)
+            + (preparation_guidance * 1.5),
+        )
 
         # Analyze change management and communication guidance
         stakeholder_communication = 0
@@ -2258,26 +3253,56 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Stakeholder communication
             communication_phrases = [
-                "notify users", "communicate", "inform team", "alert", "announcement",
-                "user notification", "end user", "stakeholder", "management approval"
+                "notify users",
+                "communicate",
+                "inform team",
+                "alert",
+                "announcement",
+                "user notification",
+                "end user",
+                "stakeholder",
+                "management approval",
             ]
-            stakeholder_communication += sum(1 for phrase in communication_phrases if phrase in content)
+            stakeholder_communication += sum(
+                1 for phrase in communication_phrases if phrase in content
+            )
 
             # Timing considerations
             timing_phrases = [
-                "maintenance window", "after hours", "business hours", "schedule",
-                "timing", "when to deploy", "rollout schedule", "phased approach"
+                "maintenance window",
+                "after hours",
+                "business hours",
+                "schedule",
+                "timing",
+                "when to deploy",
+                "rollout schedule",
+                "phased approach",
             ]
-            timing_considerations += sum(1 for phrase in timing_phrases if phrase in content)
+            timing_considerations += sum(
+                1 for phrase in timing_phrases if phrase in content
+            )
 
             # Impact assessment
             impact_phrases = [
-                "impact on", "affects", "disruption", "downtime", "user experience",
-                "business impact", "service interruption", "availability"
+                "impact on",
+                "affects",
+                "disruption",
+                "downtime",
+                "user experience",
+                "business impact",
+                "service interruption",
+                "availability",
             ]
-            impact_assessment += sum(1 for phrase in impact_phrases if phrase in content)
+            impact_assessment += sum(
+                1 for phrase in impact_phrases if phrase in content
+            )
 
-        change_management_score = min(10, (stakeholder_communication * 2.5) + (timing_considerations * 2) + (impact_assessment * 2))
+        change_management_score = min(
+            10,
+            (stakeholder_communication * 2.5)
+            + (timing_considerations * 2)
+            + (impact_assessment * 2),
+        )
 
         # Analyze environmental and technical considerations
         environment_awareness = 0
@@ -2289,26 +3314,52 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Environment awareness
             env_phrases = [
-                "production environment", "test environment", "staging", "development",
-                "environment specific", "system requirements", "infrastructure"
+                "production environment",
+                "test environment",
+                "staging",
+                "development",
+                "environment specific",
+                "system requirements",
+                "infrastructure",
             ]
-            environment_awareness += sum(1 for phrase in env_phrases if phrase in content)
+            environment_awareness += sum(
+                1 for phrase in env_phrases if phrase in content
+            )
 
             # Technical requirements
             tech_phrases = [
-                "system requirements", "compatibility", "version", "dependencies",
-                "prerequisites", "supported", "minimum requirements", "hardware"
+                "system requirements",
+                "compatibility",
+                "version",
+                "dependencies",
+                "prerequisites",
+                "supported",
+                "minimum requirements",
+                "hardware",
             ]
-            technical_requirements += sum(1 for phrase in tech_phrases if phrase in content)
+            technical_requirements += sum(
+                1 for phrase in tech_phrases if phrase in content
+            )
 
             # Compatibility checks
             compat_phrases = [
-                "compatible with", "check compatibility", "verify version",
-                "supported on", "works with", "compatibility matrix"
+                "compatible with",
+                "check compatibility",
+                "verify version",
+                "supported on",
+                "works with",
+                "compatibility matrix",
             ]
-            compatibility_checks += sum(1 for phrase in compat_phrases if phrase in content)
+            compatibility_checks += sum(
+                1 for phrase in compat_phrases if phrase in content
+            )
 
-        technical_readiness_score = min(10, (environment_awareness * 2) + (technical_requirements * 1.5) + (compatibility_checks * 2.5))
+        technical_readiness_score = min(
+            10,
+            (environment_awareness * 2)
+            + (technical_requirements * 1.5)
+            + (compatibility_checks * 2.5),
+        )
 
         # Analyze validation and testing guidance
         testing_guidance = 0
@@ -2320,26 +3371,56 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Testing guidance
             testing_phrases = [
-                "test this", "validate", "verify", "confirm", "check that",
-                "run a test", "pilot test", "proof of concept", "trial run"
+                "test this",
+                "validate",
+                "verify",
+                "confirm",
+                "check that",
+                "run a test",
+                "pilot test",
+                "proof of concept",
+                "trial run",
             ]
-            testing_guidance += sum(1 for phrase in testing_phrases if phrase in content)
+            testing_guidance += sum(
+                1 for phrase in testing_phrases if phrase in content
+            )
 
             # Validation steps
             validation_phrases = [
-                "validation", "verify results", "confirm success", "check logs",
-                "monitor", "observe", "expected outcome", "success criteria"
+                "validation",
+                "verify results",
+                "confirm success",
+                "check logs",
+                "monitor",
+                "observe",
+                "expected outcome",
+                "success criteria",
             ]
-            validation_steps += sum(1 for phrase in validation_phrases if phrase in content)
+            validation_steps += sum(
+                1 for phrase in validation_phrases if phrase in content
+            )
 
             # Troubleshooting support
             troubleshoot_phrases = [
-                "if this fails", "troubleshoot", "common issues", "error messages",
-                "if you encounter", "problem solving", "diagnostic", "resolve"
+                "if this fails",
+                "troubleshoot",
+                "common issues",
+                "error messages",
+                "if you encounter",
+                "problem solving",
+                "diagnostic",
+                "resolve",
             ]
-            troubleshooting_support += sum(1 for phrase in troubleshoot_phrases if phrase in content)
+            troubleshooting_support += sum(
+                1 for phrase in troubleshoot_phrases if phrase in content
+            )
 
-        validation_score = min(10, (testing_guidance * 2) + (validation_steps * 1.5) + (troubleshooting_support * 2.5))
+        validation_score = min(
+            10,
+            (testing_guidance * 2)
+            + (validation_steps * 1.5)
+            + (troubleshooting_support * 2.5),
+        )
 
         # Analyze documentation and follow-up guidance
         documentation_guidance = 0
@@ -2350,32 +3431,64 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
 
             # Documentation guidance
             doc_phrases = [
-                "document", "record", "log", "track changes", "audit trail",
-                "evidence", "report", "documentation", "notes"
+                "document",
+                "record",
+                "log",
+                "track changes",
+                "audit trail",
+                "evidence",
+                "report",
+                "documentation",
+                "notes",
             ]
-            documentation_guidance += sum(1 for phrase in doc_phrases if phrase in content)
+            documentation_guidance += sum(
+                1 for phrase in doc_phrases if phrase in content
+            )
 
             # Follow-up support
             followup_phrases = [
-                "follow up", "next steps", "ongoing", "maintenance", "monitoring",
-                "regular checks", "periodic review", "continue to"
+                "follow up",
+                "next steps",
+                "ongoing",
+                "maintenance",
+                "monitoring",
+                "regular checks",
+                "periodic review",
+                "continue to",
             ]
-            follow_up_support += sum(1 for phrase in followup_phrases if phrase in content)
+            follow_up_support += sum(
+                1 for phrase in followup_phrases if phrase in content
+            )
 
-        documentation_score = min(10, (documentation_guidance * 2.5) + (follow_up_support * 2))
+        documentation_score = min(
+            10, (documentation_guidance * 2.5) + (follow_up_support * 2)
+        )
 
         # Analyze summary for implementation context
         summary_lower = str(summary).lower()
         implementation_summary_indicators = [
-            "implementation", "deployment", "rollout", "configuration", "setup",
-            "installation", "step by step", "guidance provided", "instructions"
+            "implementation",
+            "deployment",
+            "rollout",
+            "configuration",
+            "setup",
+            "installation",
+            "step by step",
+            "guidance provided",
+            "instructions",
         ]
-        summary_signals = sum(1 for indicator in implementation_summary_indicators if indicator in summary_lower)
+        summary_signals = sum(
+            1
+            for indicator in implementation_summary_indicators
+            if indicator in summary_lower
+        )
 
         # Adjust scores based on summary insights
         if summary_signals > 0:
             step_by_step_score = min(10, step_by_step_score + summary_signals * 0.5)
-            risk_mitigation_score = min(10, risk_mitigation_score + summary_signals * 0.3)
+            risk_mitigation_score = min(
+                10, risk_mitigation_score + summary_signals * 0.3
+            )
 
         # Identify implementation support patterns
         patterns = []
@@ -2409,18 +3522,28 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
             patterns.append("documentation_conscious")
 
         # Check for holistic implementation approach
-        total_implementation_signals = (step_indicators + structured_guidance +
-                                      risk_identification + mitigation_strategies +
-                                      stakeholder_communication + testing_guidance)
+        total_implementation_signals = (
+            step_indicators
+            + structured_guidance
+            + risk_identification
+            + mitigation_strategies
+            + stakeholder_communication
+            + testing_guidance
+        )
         if total_implementation_signals >= 8:
             patterns.append("comprehensive_implementation_support")
         elif total_implementation_signals <= 2:
             patterns.append("basic_implementation_guidance")
 
         # Calculate overall implementation support score
-        implementation_support_score = (step_by_step_score + risk_mitigation_score +
-                                      change_management_score + technical_readiness_score +
-                                      validation_score + documentation_score) / 6
+        implementation_support_score = (
+            step_by_step_score
+            + risk_mitigation_score
+            + change_management_score
+            + technical_readiness_score
+            + validation_score
+            + documentation_score
+        ) / 6
 
         return {
             "status": "success",
@@ -2450,12 +3573,15 @@ def assess_implementation_support_quality(messages: list[dict], summary: str) ->
                 "troubleshooting_support": troubleshooting_support,
                 "documentation_guidance": documentation_guidance,
                 "follow_up_support": follow_up_support,
-                "summary_implementation_signals": summary_signals
-            }
+                "summary_implementation_signals": summary_signals,
+            },
         }
 
     except Exception as e:
-        return {"status": "error", "error_message": f"Implementation support quality analysis failed: {str(e)}"}
+        return {
+            "status": "error",
+            "error_message": f"Implementation support quality analysis failed: {str(e)}",
+        }
 
 
 def extract_conversation_metadata(messages: list[dict]) -> dict:
@@ -2574,7 +3700,6 @@ analyzer_agent = Agent(
         "have flagged it for review. The flag could be positive (exceptionally good), negative (problematic), "
         "or ambiguous (unclear situation). You have Jamf Software domain expertise to provide context when "
         "conversations involve Apple ecosystem, device management, or Jamf products.\n\n"
-
         "INPUT FORMAT PARSING:\n"
         "Your input will be formatted as:\n"
         "=== ANONYMIZED MESSAGES ===\n"
@@ -2583,7 +3708,6 @@ analyzer_agent = Agent(
         "[Summary data here]\n\n"
         "FIRST: Parse this input to extract the messages and summary separately.\n"
         "IMPORTANT: DO NOT include the raw anonymized conversation in your output - only provide analysis results.\n\n"
-
         "YOUR INVESTIGATION APPROACH:\n"
         "1. **Parse Input**: Extract messages and summary from the formatted input\n"
         "2. **Basic Analysis**: Use 'extract_conversation_metadata' for conversation structure\n"
@@ -2602,13 +3726,11 @@ analyzer_agent = Agent(
         "   - 'evaluate_problem_resolution_confidence' - Always useful for understanding resolution\n"
         "   - 'assess_implementation_support_quality' - Always useful for understanding guidance quality\n"
         "5. **Investigate**: Synthesize findings to understand why this was flagged\n\n"
-
         "JAMF DOMAIN KNOWLEDGE (Available for Context):\n"
         "- **Apple Platforms**: macOS versions, iOS/iPadOS, Apple Silicon, hardware security features\n"
         "- **Jamf Products**: Jamf Pro (policies, profiles, Self Service), School, Connect, Protect\n"
         "- **MDM Concepts**: Device enrollment, configuration profiles, management policies\n"
         "- **Security**: Zero Trust, compliance frameworks, Apple security features\n\n"
-
         "WHAT TO INVESTIGATE:\n"
         "**Potential Positive Flagging (User impressed):**\n"
         "- Exceptionally thorough or creative problem-solving\n"
@@ -2627,7 +3749,6 @@ analyzer_agent = Agent(
         "- Conversations that seem routine but may have subtle issues\n"
         "- Complex technical discussions open to interpretation\n"
         "- Edge cases requiring non-standard approaches\n\n"
-
         "YOUR INVESTIGATION REPORT (ANALYSIS ONLY - NO RAW DATA):\n"
         "1. **What Happened**: Brief overview of the conversation and main topic\n"
         "2. **Key Findings**: Most significant patterns, issues, or highlights discovered\n"
@@ -2637,9 +3758,16 @@ analyzer_agent = Agent(
         "6. **Domain Context** (if relevant): Was appropriate Jamf/Apple expertise demonstrated?\n"
         "7. **User Experience**: What likely experience did the end-user have?\n"
         "8. **Confidence**: How confident are you in your analysis?\n\n"
-        "NOTE: Your output should contain ONLY your analysis findings, insights, and conclusions. "
-        "Do NOT reproduce or quote the anonymized conversation messages in your report.\n\n"
-
+        "CRITICAL OUTPUT FORMAT:\n"
+        "Your output must contain ONLY:\n"
+        "- 'summary': Your structured summary text\n"
+        "- 'detailed_analysis': Your investigation findings\n\n"
+        "DO NOT INCLUDE in your output:\n"
+        "- 'messages' array\n"
+        "- 'anonymized_conversation' array\n"
+        "- Raw conversation data of any kind\n"
+        "- The === ANONYMIZED MESSAGES === section\n\n"
+        "The message data is for your analysis only - never output it.\n\n"
         "INVESTIGATION PRINCIPLES:\n"
         "- **Be Objective**: Look for evidence without assuming positive or negative flagging\n"
         "- **Be Contextual**: Use domain knowledge when relevant, ignore when not applicable\n"
@@ -2647,7 +3775,6 @@ analyzer_agent = Agent(
         "- **Be Balanced**: Consider multiple perspectives and possibilities\n"
         "- **Be Investigative**: Focus on 'what happened?' not 'score against criteria'\n"
         "- **Preserve Anonymity**: Maintain all anonymized placeholders\n\n"
-
         "Your role is detective, not scorekeeper. Investigate objectively to understand why this "
         "conversation caught the user's attention enough to flag it for review."
     ),
@@ -2665,6 +3792,6 @@ analyzer_agent = Agent(
         assess_mdm_device_management_concepts,
         analyze_security_compliance_guidance,
         evaluate_problem_resolution_confidence,
-        assess_implementation_support_quality
+        assess_implementation_support_quality,
     ],
 )

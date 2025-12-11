@@ -42,13 +42,32 @@ root_agent = Agent(
         "in a clear, organized format including ONLY:\n"
         "- The conversation summary\n"
         "- The detailed analysis with scores and recommendations\n\n"
-        "DO NOT include the anonymized conversation in your final output - it's for "
-        "internal processing only. The user only needs the summary and analysis.\n\n"
+        "REQUIRED OUTPUT FORMAT (JSON):\n"
+        "Your final output MUST be exactly this structure:\n"
+        "```json\n"
+        "{\n"
+        '  "summary": "A structured summary of the conversation including: overview, topics discussed, key points, user feedback signals, issue summary, and outcome.",\n'
+        '  "detailed_analysis": {\n'
+        '    "what_happened": "Brief overview of the conversation",\n'
+        '    "key_findings": ["Finding 1", "Finding 2"],\n'
+        '    "flagging_investigation": "Why this was likely flagged",\n'
+        '    "conversation_flow_assessment": "How the interaction progressed",\n'
+        '    "response_quality": "Assessment of response accuracy and helpfulness",\n'
+        '    "user_experience": "What experience the user likely had",\n'
+        '    "strengths": ["Strength 1", "Strength 2"],\n'
+        '    "areas_for_improvement": ["Area 1", "Area 2"],\n'
+        '    "recommendations": ["Recommendation 1", "Recommendation 2"]\n'
+        "  }\n"
+        "}\n"
+        "```\n\n"
+        "DO NOT include in your output:\n"
+        "- 'messages' array\n"
+        "- 'anonymized_conversation' array\n"
+        "- Any raw conversation data\n\n"
         "IMPORTANT:\n"
         "- Always use the pipeline for processing conversations\n"
-        "- Never expose original PII in your output\n"
-        "- DO NOT output the anonymized_conversation array - only summary and analysis\n"
-        "- Highlight any messages with 'verso: down' or negative 'feedback'\n"
+        "- Never expose original PII or message arrays in your output\n"
+        "- Highlight any 'verso: down' or negative feedback in the summary\n"
         "- If any step fails, report the error clearly"
     ),
     sub_agents=[feedback_pipeline],
