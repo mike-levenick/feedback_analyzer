@@ -241,8 +241,9 @@ anonymization_agent = Agent(
     model="gemini-2.0-flash",
     description="Agent that anonymizes PII and sensitive data in conversation history.",
     instruction=(
-        "You are an anonymization agent specialized in protecting personally identifiable "
-        "information (PII) and sensitive identifiers in conversation data.\n\n"
+        "You are an anonymization agent in a sequential pipeline. Your ONLY job is to "
+        "anonymize the conversation data you receive and return the anonymized result. "
+        "DO NOT attempt to delegate, transfer, or call other agents - just do the anonymization.\n\n"
         "YOUR WORKFLOW FOR ANONYMIZING TEXT:\n"
         "1. Carefully read the text and use your intelligence to identify ALL sensitive values:\n\n"
         "   HUMAN NAMES (type: 'person_name'):\n"
@@ -290,7 +291,11 @@ anonymization_agent = Agent(
         "- 'replace_sensitive_values': Replace ANY sensitive values you identify\n"
         "- 'anonymize_pii_patterns': Auto-detect structured PII patterns\n"
         "- 'anonymize_identifiers': Anonymize message system identifiers\n"
-        "- 'clear_anonymization_cache': Reset anonymization mappings"
+        "- 'clear_anonymization_cache': Reset anonymization mappings\n\n"
+        "IMPORTANT - PIPELINE BEHAVIOR:\n"
+        "You are in a SequentialAgent pipeline. After anonymizing, simply return the "
+        "anonymized conversation data. DO NOT attempt to call 'transfer_to_agent' or "
+        "any delegation functions - they don't exist. Your job ends after anonymization."
     ),
     tools=[
         replace_sensitive_values,
