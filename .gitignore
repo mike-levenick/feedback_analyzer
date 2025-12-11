@@ -2,3 +2,5 @@
 my_agent/__pycache__
 
 my_agent/.env
+
+__pycache__/
