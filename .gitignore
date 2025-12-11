@@ -28,3 +28,18 @@ build/
 # OS
 .DS_Store
 Thumbs.db
+
+# Deployment artifacts (contain project-specific IDs)
+deployment_metadata.json
+
+# ASP backup directories
+.backup_*/
+
+# Generated requirements file
+feedback_analyzer/app_utils/.requirements.txt
+
+# Analysis outputs (optional - remove if you want to track these)
+analysis_output.md
+
+# Deployment info (documentation, not code)
+deployment-info.txt

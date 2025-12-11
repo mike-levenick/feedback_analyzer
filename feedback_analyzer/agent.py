@@ -72,3 +72,7 @@ root_agent = Agent(
     ),
     sub_agents=[feedback_pipeline],
 )
+
+from google.adk.apps.app import App
+
+app = App(root_agent=root_agent, name="feedback_analyzer")
