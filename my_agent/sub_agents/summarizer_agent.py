@@ -30,9 +30,13 @@ def format_conversation_for_summary(messages: list[dict]) -> dict:
         }
 
     formatted_lines = []
+    feedback_signals = []
+
     for i, msg in enumerate(messages):
         role = msg.get("role", "unknown").upper()
         content = msg.get("content", "")
+        verso = msg.get("verso")  # 'up' or 'down' feedback direction
+        feedback = msg.get("feedback")  # freeform feedback comment
 
         # Handle structured content (list format)
         if isinstance(content, list):
@@ -44,12 +48,31 @@ def format_conversation_for_summary(messages: list[dict]) -> dict:
                     content_parts.append(item["text"])
             content = " ".join(content_parts)
 
-        formatted_lines.append(f"[{role}]: {content}")
+        line = f"[{role}]: {content}"
+
+        # Add feedback indicators if present
+        if verso == "down":
+            line += " [⚠️ NEGATIVE FEEDBACK]"
+            feedback_signals.append(
+                f"Message {i + 1}: Received negative feedback (thumbs down)"
+            )
+        elif verso == "up":
+            feedback_signals.append(
+                f"Message {i + 1}: Received positive feedback (thumbs up)"
+            )
+
+        if feedback:
+            line += f" [User comment: {feedback}]"
+            feedback_signals.append(f"Message {i + 1} comment: {feedback}")
+
+        formatted_lines.append(line)
 
     return {
         "status": "success",
         "formatted_conversation": "\n\n".join(formatted_lines),
         "message_count": len(messages),
+        "feedback_signals": feedback_signals,
+        "has_negative_feedback": any("down" == msg.get("verso") for msg in messages),
     }
 
 
@@ -73,14 +96,17 @@ summarizer_agent = Agent(
         "   - Key responses/solutions provided\n"
         "   - Any unresolved issues or follow-ups needed\n"
         "   - Overall sentiment/tone of the conversation\n"
-        "   - Feedback provided by the user (thumbs up/down and comments)\n"
+        "   - USER FEEDBACK SIGNALS (critical!):\n"
+        "     * 'verso' field: 'up' = positive, 'down' = NEGATIVE feedback\n"
+        "     * 'feedback' field: explicit user comments about the conversation\n"
         "   - Messages after feedback for additional context\n"
         "3. Create a structured summary with these sections:\n"
         "   - **Overview**: 1-2 sentence high-level summary\n"
         "   - **Topics Discussed**: Bullet points of main topics\n"
         "   - **Key Points**: Important information exchanged\n"
+        "   - **User Feedback**: Any verso or feedback signals found (IMPORTANT!)\n"
+        "   - **Issue Summary**: Why the user provided feedback and any comments\n"
         "   - **Outcome**: How the conversation concluded\n\n"
-        "   - **Issue Summary**: Why the user provided feedback (thumbs up/down) and any comments\n"
         "CRITICAL FOR PIPELINE COORDINATION:\n"
         "After creating the summary, you MUST output BOTH:\n"
         "1. **MESSAGES**: The original anonymized message data you received\n"
