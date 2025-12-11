@@ -60,45 +60,68 @@ def _generate_anonymous_value(original: str, pii_type: str, salt: str = "") -> s
     return anonymous_value
 
 
-def replace_names_in_text(text: str, names: list[str], salt: str = "") -> dict:
-    """Replace identified human names in text with anonymized placeholders.
+def replace_sensitive_values(
+    text: str,
+    values: list[dict],
+    salt: str = "",
+) -> dict:
+    """Replace sensitive values identified by the agent in text.
 
-    This tool is called by the agent after it has intelligently identified
-    human names in the text. The agent uses its contextual understanding
-    to determine what constitutes a name.
+    This is a general-purpose tool for replacing ANY sensitive information
+    that the agent identifies using its intelligence. The agent determines
+    what type each value is (name, username, serial, ID, etc.).
 
     Args:
-        text: The text content containing names to anonymize.
-        names: List of names identified by the agent to be replaced.
-               Can include first names, last names, or full names.
+        text: The text content containing sensitive values to anonymize.
+        values: List of dicts, each with:
+            - 'value': The sensitive string to replace
+            - 'type': Category like 'person_name', 'username', 'serial_number',
+                      'device_id', 'account_id', 'jss_id', 'user_id', 'custom_id', etc.
         salt: Optional salt for consistent anonymization across calls.
 
     Returns:
-        dict: Contains 'anonymized_text' and list of 'replaced_names'.
+        dict: Contains 'anonymized_text' and list of 'replacements'.
+
+    Example:
+        values = [
+            {"value": "John Smith", "type": "person_name"},
+            {"value": "jsmith_42", "type": "username"},
+            {"value": "PLVU929ESEF", "type": "serial_number"},
+            {"value": "JSS-12345", "type": "jss_id"},
+        ]
     """
     if not text:
-        return {"status": "success", "anonymized_text": "", "replaced_names": []}
+        return {"status": "success", "anonymized_text": "", "replacements": []}
 
-    if not names:
-        return {"status": "success", "anonymized_text": text, "replaced_names": []}
+    if not values:
+        return {"status": "success", "anonymized_text": text, "replacements": []}
 
     anonymized = text
-    replaced = []
+    replacements = []
 
-    # Sort names by length (longest first) to avoid partial replacements
-    sorted_names = sorted(set(names), key=len, reverse=True)
+    # Sort by length (longest first) to avoid partial replacements
+    sorted_values = sorted(values, key=lambda x: len(x.get("value", "")), reverse=True)
 
-    for name in sorted_names:
-        if name in anonymized:
-            anonymous_value = _generate_anonymous_value(name, "person_name", salt)
-            anonymized = anonymized.replace(name, anonymous_value)
-            replaced.append({"original": name, "replacement": anonymous_value})
+    for item in sorted_values:
+        value = item.get("value", "")
+        value_type = item.get("type", "sensitive_data")
+
+        if value and value in anonymized:
+            anonymous_value = _generate_anonymous_value(value, value_type, salt)
+            anonymized = anonymized.replace(value, anonymous_value)
+            replacements.append(
+                {
+                    "original": value,
+                    "type": value_type,
+                    "replacement": anonymous_value,
+                }
+            )
 
     return {
         "status": "success",
         "anonymized_text": anonymized,
-        "replaced_names": replaced,
-        "names_found": len(replaced) > 0,
+        "replacements": replacements,
+        "items_replaced": len(replacements),
     }
 
 
@@ -219,31 +242,58 @@ anonymization_agent = Agent(
     description="Agent that anonymizes PII and sensitive data in conversation history.",
     instruction=(
         "You are an anonymization agent specialized in protecting personally identifiable "
-        "information (PII) in conversation data.\n\n"
+        "information (PII) and sensitive identifiers in conversation data.\n\n"
         "YOUR WORKFLOW FOR ANONYMIZING TEXT:\n"
-        "1. First, carefully read the text and use your intelligence to identify ALL human names "
-        "(first names, last names, nicknames, full names). Consider context - names can appear "
-        "in greetings ('Hi John'), signatures, references to people, etc.\n"
-        "2. Call 'replace_names_in_text' with the text and the list of names you identified.\n"
-        "3. Take the result and call 'anonymize_pii_patterns' to detect and replace structured "
-        "PII (emails, phone numbers, SSNs, credit cards, IP addresses, UUIDs).\n\n"
+        "1. Carefully read the text and use your intelligence to identify ALL sensitive values:\n\n"
+        "   HUMAN NAMES (type: 'person_name'):\n"
+        "   - First names, last names, full names, nicknames\n"
+        "   - Names in greetings ('Hi John'), signatures, references\n"
+        "   - Names from all cultures and backgrounds\n\n"
+        "   USERNAMES (type: 'username'):\n"
+        "   - Account usernames like 'jsmith_42', 'user123', 'admin_bob'\n"
+        "   - Login identifiers, screen names, handles\n\n"
+        "   SERIAL NUMBERS (type: 'serial_number'):\n"
+        "   - Device serials like 'PLVU929ESEF', 'SN-ABC123XYZ'\n"
+        "   - Product codes, hardware identifiers\n"
+        "   - Alphanumeric strings that look like serials\n\n"
+        "   IDs (various types):\n"
+        "   - JSS IDs (type: 'jss_id'): 'JSS-12345', device management IDs\n"
+        "   - User IDs (type: 'user_id'): 'usr_abc123', numeric user IDs\n"
+        "   - Account IDs (type: 'account_id'): customer/account numbers\n"
+        "   - Device IDs (type: 'device_id'): 'DEV-001', machine identifiers\n"
+        "   - Ticket IDs (type: 'ticket_id'): 'TKT-789', case numbers\n"
+        "   - Any other IDs (type: 'custom_id')\n\n"
+        "2. Call 'replace_sensitive_values' with the text and list of identified values.\n"
+        "   Each value needs: {'value': 'the_text', 'type': 'category'}\n\n"
+        "3. Take the result and call 'anonymize_pii_patterns' to detect structured PII\n"
+        "   (emails, phone numbers, SSNs, credit cards, IP addresses, UUIDs).\n\n"
         "FOR ANONYMIZING MESSAGE IDENTIFIERS:\n"
-        "Use 'anonymize_identifiers' to anonymize system identifiers in message dictionaries "
-        "(message_id, thread_id, org_id, user_id, tenant_id, PK, SK).\n\n"
-        "IMPORTANT GUIDELINES:\n"
-        "- Be thorough when identifying names - look for names from all cultures and backgrounds\n"
-        "- Consider nicknames and informal name references\n"
-        "- Names at the start of sentences may look like regular words - use context\n"
-        "- Use the 'salt' parameter for consistent anonymization across multiple calls\n"
-        "- The same salt + original value always produces the same anonymized placeholder\n\n"
-        "TOOLS AVAILABLE:\n"
-        "- 'replace_names_in_text': Replace names YOU identify in text\n"
-        "- 'anonymize_pii_patterns': Detect/replace structured PII patterns\n"
+        "Use 'anonymize_identifiers' for system fields in message dictionaries.\n\n"
+        "PATTERN RECOGNITION (even WITHOUT labels like 'ID:' or 'serial:'):\n"
+        "Look for these patterns ANYWHERE in text, even without context clues:\n\n"
+        "- SERIAL NUMBERS: ALL CAPS alphanumeric 8-12 chars (PLVU929ESEF, C02X1234ABCD)\n"
+        "  These often appear as bare strings without any label!\n"
+        "- USERNAMES: lowercase with underscores/dots/numbers (john_doe, j.smith, user123)\n"
+        "  Look for words that seem like account names, not regular English words\n"
+        "- IDs WITH PREFIXES: JSS-12345, USR-789, DEV-001, TKT-456, ID-ABC123\n"
+        "  Any WORD-NUMBER or LETTERS-NUMBERS pattern could be an ID\n"
+        "- NUMERIC IDS: Standalone numbers 4+ digits that aren't dates/times (12345, 98765)\n"
+        "- ALPHANUMERIC CODES: Mixed letter-number strings (A1B2C3, XYZ789, 2FA5BC)\n\n"
+        "CRITICAL: Do NOT wait for labels like 'serial number:' or 'username:'\n"
+        "Instead, recognize the PATTERN ITSELF:\n"
+        "- 'Check device PLVU929ESEF' -> PLVU929ESEF is a serial (ALL CAPS alphanumeric)\n"
+        "- 'User jsmith_42 reported' -> jsmith_42 is a username (underscore pattern)\n"
+        "- 'Ticket 78234 was closed' -> 78234 could be a ticket ID\n"
+        "- 'Machine C02DM1XDFVH4' -> C02DM1XDFVH4 is a serial (Apple-style)\n\n"
+        "When in doubt, anonymize it - false positives are safer than leaking data!\n\n"
+        "TOOLS:\n"
+        "- 'replace_sensitive_values': Replace ANY sensitive values you identify\n"
+        "- 'anonymize_pii_patterns': Auto-detect structured PII patterns\n"
         "- 'anonymize_identifiers': Anonymize message system identifiers\n"
         "- 'clear_anonymization_cache': Reset anonymization mappings"
     ),
     tools=[
-        replace_names_in_text,
+        replace_sensitive_values,
         anonymize_pii_patterns,
         anonymize_identifiers,
         clear_anonymization_cache,
