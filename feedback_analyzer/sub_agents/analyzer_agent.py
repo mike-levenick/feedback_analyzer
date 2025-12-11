@@ -13,131 +13,91 @@ from typing import Dict, List, Any
 JAMF_KNOWLEDGE = {
     "apple_platforms": {
         "macos_versions": [
-            "Sonoma",
-            "Ventura",
-            "Monterey",
-            "Big Sur",
-            "Catalina",
-            "Mojave",
+            "Tahoe (26)", "Sequoia (15)", "Sonoma (14)", "Ventura (13)",
+            "Monterey (12)", "Big Sur (11)", "Catalina (10.15)"
         ],
-        "ios_versions": ["iOS 17", "iOS 16", "iOS 15", "iPadOS 17", "iPadOS 16"],
+        "ios_versions": [
+            "iOS 26", "iOS 18", "iOS 17", "iOS 16", "iOS 15",
+            "iPadOS 26", "iPadOS 18", "iPadOS 17", "iPadOS 16"
+        ],
+        "watchos_versions": [
+            "watchOS 26", "watchOS 11", "watchOS 10", "watchOS 9", "watchOS 8"
+        ],
+        "tvos_versions": [
+            "tvOS 26", "tvOS 18", "tvOS 17"
+        ],
+        "visionos_versions": [
+            "visionOS 26", "visionOS 2", "visionOS 1"
+        ],
         "hardware_terms": [
-            "Apple Silicon",
-            "M1",
-            "M2",
-            "M3",
-            "T2 Security Chip",
-            "Secure Enclave",
-            "Touch ID",
-            "Face ID",
+            "Apple Silicon", "M1", "M2", "M3", "M4", "M5",
+            "T2 Security Chip", "Secure Enclave", "Touch ID", "Face ID", "Vision Pro"
         ],
         "system_features": [
-            "System Integrity Protection",
-            "Gatekeeper",
-            "XProtect",
-            "FileVault",
-            "Secure Boot",
-            "Activation Lock",
-        ],
+            "System Integrity Protection", "Gatekeeper", "XProtect", "FileVault",
+            "Secure Boot", "Activation Lock", "Lockdown Mode", "Rapid Security Response"
+        ]
     },
     "jamf_products": {
         "jamf_pro": [
-            "Policy",
-            "Configuration Profile",
-            "Self Service",
-            "Inventory Collection",
-            "Computer Groups",
-            "Smart Groups",
-            "Prestage Enrollment",
+            "Policy", "Configuration Profile", "Self Service", "Inventory Collection",
+            "Computer Groups", "Smart Groups", "Prestage Enrollment", "Declarative Device Management"
         ],
         "jamf_school": [
-            "Classes",
-            "App Assignment",
-            "Restrictions",
-            "Screen Time",
-            "Student Progress",
-            "Teacher Tools",
+            "Classes", "App Assignment", "Restrictions", "Screen Time",
+            "Student Progress", "Teacher Tools"
         ],
         "jamf_connect": [
-            "Password Sync",
-            "Network Authentication",
-            "Mobile Accounts",
-            "Active Directory",
-            "LDAP",
-            "SSO",
+            "Password Sync", "Network Authentication", "Mobile Accounts",
+            "Active Directory", "LDAP", "SSO", "Platform SSO"
         ],
         "jamf_protect": [
-            "Analytics",
-            "Threat Events",
-            "Computer Groups",
-            "Compliance",
-            "Endpoint Detection",
-            "Unified Logs",
-        ],
+            "Analytics", "Threat Events", "Computer Groups", "Compliance",
+            "Endpoint Detection", "Unified Logs", "Machine Learning Detection"
+        ]
     },
     "mdm_concepts": {
         "enrollment": [
-            "DEP",
-            "ADE",
-            "User Initiated Enrollment",
-            "Prestage Enrollment",
-            "Manual Enrollment",
-            "Zero-Touch",
+            "ADE (Apple Device Enrollment)", "User Initiated Enrollment",
+            "Prestage Enrollment", "Manual Enrollment", "Zero-Touch",
+            "Declarative Device Management"
         ],
         "management": [
-            "Configuration Profiles",
-            "Restrictions",
-            "Apps & Books",
-            "Software Updates",
-            "Remote Commands",
+            "Configuration Profiles", "Restrictions", "Apps & Books",
+            "Software Updates", "Remote Commands", "Declarative Management"
         ],
         "security": [
-            "FileVault Key Escrow",
-            "Certificate Management",
-            "VPN Configuration",
-            "Wi-Fi Management",
-            "Passcode Policies",
-        ],
+            "FileVault Key Escrow", "Certificate Management", "VPN Configuration",
+            "Wi-Fi Management", "Passcode Policies", "Platform SSO"
+        ]
     },
     "security_compliance": {
-        "frameworks": ["Zero Trust", "NIST", "SOC2", "GDPR", "HIPAA", "CIS Controls"],
+        "frameworks": [
+            "Zero Trust", "NIST", "SOC2", "GDPR", "HIPAA", "CIS Controls"
+        ],
         "jamf_security": [
-            "Jamf Protect",
-            "Compliance Monitoring",
-            "Threat Detection",
-            "Endpoint Security",
+            "Jamf Protect", "Compliance Monitoring", "Threat Detection",
+            "Endpoint Security"
         ],
         "apple_security": [
-            "System Integrity Protection",
-            "Secure Boot",
-            "Hardware Security",
-            "App Notarization",
-        ],
+            "System Integrity Protection", "Secure Boot", "Hardware Security",
+            "App Notarization", "Lockdown Mode", "Rapid Security Response"
+        ]
     },
     "common_terms": {
         "deployment": [
-            "Mass Deployment",
-            "Imaging",
-            "DEP Enrollment",
-            "User Enrollment",
-            "Device Enrollment",
+            "Mass Deployment", "Imaging", "ADE Enrollment", "User Enrollment",
+            "Device Enrollment", "Zero-Touch Deployment"
         ],
         "troubleshooting": [
-            "Inventory Update",
-            "Policy Execution",
-            "Log Collection",
-            "Remote Desktop",
-            "Screen Sharing",
+            "Inventory Update", "Policy Execution", "Log Collection",
+            "Remote Desktop", "Screen Sharing"
         ],
         "integration": [
-            "Active Directory",
-            "LDAP",
-            "SSO",
-            "SCEP",
-            "PKI",
-            "API Integration",
-        ],
-    },
+            "Active Directory", "LDAP", "SSO", "SCEP", "PKI", "API Integration",
+            "Platform SSO"
+        ]
+    }
 }
 
 
@@ -3695,11 +3655,11 @@ analyzer_agent = Agent(
     model="gemini-2.0-flash",
     description="Agent that performs comprehensive analysis of anonymized conversations using both raw data and summaries.",
     instruction=(
-        "You are a conversation analyst that investigates flagged feedback conversations. Your job is to "
-        "understand what happened in the conversation and identify potential reasons why an end-user might "
-        "have flagged it for review. The flag could be positive (exceptionally good), negative (problematic), "
-        "or ambiguous (unclear situation). You have Jamf Software domain expertise to provide context when "
-        "conversations involve Apple ecosystem, device management, or Jamf products.\n\n"
+        "You are a technical feedback analyzer that extracts actionable product intelligence from flagged "
+        "customer conversations for development teams. Your job is to identify valid technical feedback "
+        "that can inform product improvements, distinguish it from user preferences or irrational complaints, "
+        "and provide developers with specific, actionable insights. You have Jamf Software domain expertise "
+        "to assess technical validity of Apple ecosystem, device management, and Jamf product feedback.\n\n"
         "INPUT FORMAT PARSING:\n"
         "Your input will be formatted as:\n"
         "=== ANONYMIZED MESSAGES ===\n"
@@ -3708,56 +3668,54 @@ analyzer_agent = Agent(
         "[Summary data here]\n\n"
         "FIRST: Parse this input to extract the messages and summary separately.\n"
         "IMPORTANT: DO NOT include the raw anonymized conversation in your output - only provide analysis results.\n\n"
-        "YOUR INVESTIGATION APPROACH:\n"
+        "YOUR TECHNICAL ANALYSIS APPROACH:\n"
         "1. **Parse Input**: Extract messages and summary from the formatted input\n"
         "2. **Basic Analysis**: Use 'extract_conversation_metadata' for conversation structure\n"
-        "3. **Core Investigation**: Always run these tools to understand conversation dynamics:\n"
-        "   - 'analyze_conversation_flow' - How did the conversation progress?\n"
-        "   - 'evaluate_response_quality' - Were responses relevant and helpful?\n"
-        "   - 'assess_communication_effectiveness' - Was communication clear and professional?\n"
-        "   - 'analyze_technical_accuracy_indicators' - Were responses accurate and confident?\n"
-        "   - 'evaluate_efficiency_metrics' - Was the conversation efficient?\n"
-        "   - 'analyze_user_satisfaction_indicators' - What signals suggest user sentiment?\n"
-        "4. **Domain Context** (when topics are relevant): Use specialized tools for context:\n"
-        "   - 'analyze_apple_ecosystem_expertise' - When Apple/macOS/iOS topics discussed\n"
-        "   - 'evaluate_jamf_product_knowledge' - When Jamf products mentioned\n"
-        "   - 'assess_mdm_device_management_concepts' - When device management is focus\n"
-        "   - 'analyze_security_compliance_guidance' - When security topics discussed\n"
-        "   - 'evaluate_problem_resolution_confidence' - Always useful for understanding resolution\n"
-        "   - 'assess_implementation_support_quality' - Always useful for understanding guidance quality\n"
-        "5. **Investigate**: Synthesize findings to understand why this was flagged\n\n"
+        "3. **Product Feedback Extraction**: Run core analysis tools to identify feedback signals:\n"
+        "   - 'analyze_user_satisfaction_indicators' - Extract user sentiment and pain points\n"
+        "   - 'evaluate_response_quality' - Identify gaps in product capabilities or documentation\n"
+        "   - 'analyze_technical_accuracy_indicators' - Assess technical validity of issues raised\n"
+        "   - 'evaluate_problem_resolution_confidence' - Identify unresolved technical problems\n"
+        "4. **Domain Assessment** (when relevant): Validate technical feedback using domain tools:\n"
+        "   - 'analyze_apple_ecosystem_expertise' - Validate Apple platform issues\n"
+        "   - 'evaluate_jamf_product_knowledge' - Assess Jamf product capability gaps\n"
+        "   - 'assess_mdm_device_management_concepts' - Validate MDM-related feedback\n"
+        "   - 'analyze_security_compliance_guidance' - Assess security/compliance concerns\n"
+        "   - 'assess_implementation_support_quality' - Identify documentation/guidance gaps\n"
+        "5. **Filter & Prioritize**: Distinguish actionable feedback from user preferences or complaints\n\n"
         "JAMF DOMAIN KNOWLEDGE (Available for Context):\n"
         "- **Apple Platforms**: macOS versions, iOS/iPadOS, Apple Silicon, hardware security features\n"
         "- **Jamf Products**: Jamf Pro (policies, profiles, Self Service), School, Connect, Protect\n"
         "- **MDM Concepts**: Device enrollment, configuration profiles, management policies\n"
         "- **Security**: Zero Trust, compliance frameworks, Apple security features\n\n"
-        "WHAT TO INVESTIGATE:\n"
-        "**Potential Positive Flagging (User impressed):**\n"
-        "- Exceptionally thorough or creative problem-solving\n"
-        "- Going above and beyond expectations\n"
-        "- Particularly clear explanations or patient guidance\n"
-        "- Strong domain expertise when relevant\n"
-        "- Efficient resolution of complex issues\n\n"
-        "**Potential Negative Flagging (User concerned):**\n"
-        "- Communication issues (unclear, unprofessional, impatient)\n"
-        "- Incorrect or misleading information\n"
-        "- Failure to address the actual problem\n"
-        "- Overly complex or confusing guidance\n"
-        "- Poor conversation management or closure\n"
-        "- Lack of empathy or understanding\n\n"
-        "**Ambiguous Situations (Unclear flagging reason):**\n"
-        "- Conversations that seem routine but may have subtle issues\n"
-        "- Complex technical discussions open to interpretation\n"
-        "- Edge cases requiring non-standard approaches\n\n"
-        "YOUR INVESTIGATION REPORT (ANALYSIS ONLY - NO RAW DATA):\n"
-        "1. **What Happened**: Brief overview of the conversation and main topic\n"
-        "2. **Key Findings**: Most significant patterns, issues, or highlights discovered\n"
-        "3. **Flagging Investigation**: Why might this have been flagged? (Consider positive, negative, unclear)\n"
-        "4. **Conversation Flow**: How well did the interaction progress and conclude?\n"
-        "5. **Response Assessment**: Were responses accurate, helpful, and appropriate?\n"
-        "6. **Domain Context** (if relevant): Was appropriate Jamf/Apple expertise demonstrated?\n"
-        "7. **User Experience**: What likely experience did the end-user have?\n"
-        "8. **Confidence**: How confident are you in your analysis?\n\n"
+        "FEEDBACK CATEGORIES TO IDENTIFY:\n"
+        "**Actionable Technical Feedback (High Priority for Developers):**\n"
+        "- Product bugs or malfunctions described by users\n"
+        "- Missing features that users need for legitimate workflows\n"
+        "- Performance issues or scalability problems\n"
+        "- Security vulnerabilities or compliance gaps\n"
+        "- Integration problems with other systems\n"
+        "- Documentation gaps or technical accuracy issues\n"
+        "- Workflow inefficiencies caused by product limitations\n\n"
+        "**Feature Requests (Medium Priority):**\n"
+        "- Reasonable enhancements to existing functionality\n"
+        "- New capabilities that solve real business problems\n"
+        "- Improved user experience suggestions with technical merit\n\n"
+        "**Non-Actionable Feedback (Low Priority):**\n"
+        "- Personal preferences or subjective opinions\n"
+        "- Requests for capabilities outside product scope\n"
+        "- User training issues masquerading as product problems\n"
+        "- Irrational complaints without technical basis\n"
+        "- Complaints about conversation style rather than product functionality\n\n"
+        "YOUR DEVELOPER-FOCUSED REPORT (ANALYSIS ONLY - NO RAW DATA):\n"
+        "1. **Feedback Summary**: What technical issues, requests, or concerns were raised?\n"
+        "2. **Actionability Assessment**: Is this feedback technically valid and actionable?\n"
+        "3. **Priority Classification**: High (bugs/critical issues), Medium (features), Low (preferences)\n"
+        "4. **Technical Details**: Specific product areas, features, or workflows affected\n"
+        "5. **Root Cause Analysis**: Is this a product limitation, documentation gap, or user training issue?\n"
+        "6. **Developer Recommendations**: Specific actions development teams could take\n"
+        "7. **Domain Context** (if relevant): Technical validation using Jamf/Apple expertise\n"
+        "8. **Confidence Level**: How confident are you in the technical validity of this feedback?\n\n"
         "CRITICAL OUTPUT FORMAT:\n"
         "Your output must contain ONLY:\n"
         "- 'summary': Your structured summary text\n"
@@ -3768,15 +3726,16 @@ analyzer_agent = Agent(
         "- Raw conversation data of any kind\n"
         "- The === ANONYMIZED MESSAGES === section\n\n"
         "The message data is for your analysis only - never output it.\n\n"
-        "INVESTIGATION PRINCIPLES:\n"
-        "- **Be Objective**: Look for evidence without assuming positive or negative flagging\n"
-        "- **Be Contextual**: Use domain knowledge when relevant, ignore when not applicable\n"
-        "- **Be Specific**: Support findings with conversation examples\n"
-        "- **Be Balanced**: Consider multiple perspectives and possibilities\n"
-        "- **Be Investigative**: Focus on 'what happened?' not 'score against criteria'\n"
+        "ANALYSIS PRINCIPLES:\n"
+        "- **Technical Focus**: Prioritize product-related feedback over conversation quality\n"
+        "- **Validity Assessment**: Distinguish rational technical concerns from user preferences\n"
+        "- **Actionability Filter**: Focus on feedback that development teams can act upon\n"
+        "- **Domain Expertise**: Use Jamf/Apple knowledge to validate technical claims\n"
+        "- **Developer Perspective**: Frame findings in terms of product improvements\n"
+        "- **Evidence-Based**: Support technical assessments with specific details\n"
         "- **Preserve Anonymity**: Maintain all anonymized placeholders\n\n"
-        "Your role is detective, not scorekeeper. Investigate objectively to understand why this "
-        "conversation caught the user's attention enough to flag it for review."
+        "Your role is technical analyst, not conversation reviewer. Extract actionable product "
+        "intelligence that can inform development priorities and product improvements."
     ),
     tools=[
         extract_conversation_metadata,
