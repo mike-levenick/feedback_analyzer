@@ -7,97 +7,170 @@ actionable feedback.
 
 from google.adk.agents import Agent
 import re
-from typing import Dict, List, Any
 
 # Jamf Software Domain Knowledge Base
 JAMF_KNOWLEDGE = {
     "apple_platforms": {
         "macos_versions": [
-            "Tahoe (26)", "Sequoia (15)", "Sonoma (14)", "Ventura (13)",
-            "Monterey (12)", "Big Sur (11)", "Catalina (10.15)"
+            "Tahoe (26)",
+            "Sequoia (15)",
+            "Sonoma (14)",
+            "Ventura (13)",
+            "Monterey (12)",
+            "Big Sur (11)",
+            "Catalina (10.15)",
         ],
         "ios_versions": [
-            "iOS 26", "iOS 18", "iOS 17", "iOS 16", "iOS 15",
-            "iPadOS 26", "iPadOS 18", "iPadOS 17", "iPadOS 16"
+            "iOS 26",
+            "iOS 18",
+            "iOS 17",
+            "iOS 16",
+            "iOS 15",
+            "iPadOS 26",
+            "iPadOS 18",
+            "iPadOS 17",
+            "iPadOS 16",
         ],
         "watchos_versions": [
-            "watchOS 26", "watchOS 11", "watchOS 10", "watchOS 9", "watchOS 8"
+            "watchOS 26",
+            "watchOS 11",
+            "watchOS 10",
+            "watchOS 9",
+            "watchOS 8",
         ],
-        "tvos_versions": [
-            "tvOS 26", "tvOS 18", "tvOS 17"
-        ],
-        "visionos_versions": [
-            "visionOS 26", "visionOS 2", "visionOS 1"
-        ],
+        "tvos_versions": ["tvOS 26", "tvOS 18", "tvOS 17"],
+        "visionos_versions": ["visionOS 26", "visionOS 2", "visionOS 1"],
         "hardware_terms": [
-            "Apple Silicon", "M1", "M2", "M3", "M4", "M5",
-            "T2 Security Chip", "Secure Enclave", "Touch ID", "Face ID", "Vision Pro"
+            "Apple Silicon",
+            "M1",
+            "M2",
+            "M3",
+            "M4",
+            "M5",
+            "T2 Security Chip",
+            "Secure Enclave",
+            "Touch ID",
+            "Face ID",
+            "Vision Pro",
         ],
         "system_features": [
-            "System Integrity Protection", "Gatekeeper", "XProtect", "FileVault",
-            "Secure Boot", "Activation Lock", "Lockdown Mode", "Rapid Security Response"
-        ]
+            "System Integrity Protection",
+            "Gatekeeper",
+            "XProtect",
+            "FileVault",
+            "Secure Boot",
+            "Activation Lock",
+            "Lockdown Mode",
+            "Rapid Security Response",
+        ],
     },
     "jamf_products": {
         "jamf_pro": [
-            "Policy", "Configuration Profile", "Self Service", "Inventory Collection",
-            "Computer Groups", "Smart Groups", "Prestage Enrollment", "Declarative Device Management"
+            "Policy",
+            "Configuration Profile",
+            "Self Service",
+            "Inventory Collection",
+            "Computer Groups",
+            "Smart Groups",
+            "Prestage Enrollment",
+            "Declarative Device Management",
         ],
         "jamf_school": [
-            "Classes", "App Assignment", "Restrictions", "Screen Time",
-            "Student Progress", "Teacher Tools"
+            "Classes",
+            "App Assignment",
+            "Restrictions",
+            "Screen Time",
+            "Student Progress",
+            "Teacher Tools",
         ],
         "jamf_connect": [
-            "Password Sync", "Network Authentication", "Mobile Accounts",
-            "Active Directory", "LDAP", "SSO", "Platform SSO"
+            "Password Sync",
+            "Network Authentication",
+            "Mobile Accounts",
+            "Active Directory",
+            "LDAP",
+            "SSO",
+            "Platform SSO",
         ],
         "jamf_protect": [
-            "Analytics", "Threat Events", "Computer Groups", "Compliance",
-            "Endpoint Detection", "Unified Logs", "Machine Learning Detection"
-        ]
+            "Analytics",
+            "Threat Events",
+            "Computer Groups",
+            "Compliance",
+            "Endpoint Detection",
+            "Unified Logs",
+            "Machine Learning Detection",
+        ],
     },
     "mdm_concepts": {
         "enrollment": [
-            "ADE (Apple Device Enrollment)", "User Initiated Enrollment",
-            "Prestage Enrollment", "Manual Enrollment", "Zero-Touch",
-            "Declarative Device Management"
+            "ADE (Apple Device Enrollment)",
+            "User Initiated Enrollment",
+            "Prestage Enrollment",
+            "Manual Enrollment",
+            "Zero-Touch",
+            "Declarative Device Management",
         ],
         "management": [
-            "Configuration Profiles", "Restrictions", "Apps & Books",
-            "Software Updates", "Remote Commands", "Declarative Management"
+            "Configuration Profiles",
+            "Restrictions",
+            "Apps & Books",
+            "Software Updates",
+            "Remote Commands",
+            "Declarative Management",
         ],
         "security": [
-            "FileVault Key Escrow", "Certificate Management", "VPN Configuration",
-            "Wi-Fi Management", "Passcode Policies", "Platform SSO"
-        ]
+            "FileVault Key Escrow",
+            "Certificate Management",
+            "VPN Configuration",
+            "Wi-Fi Management",
+            "Passcode Policies",
+            "Platform SSO",
+        ],
     },
     "security_compliance": {
-        "frameworks": [
-            "Zero Trust", "NIST", "SOC2", "GDPR", "HIPAA", "CIS Controls"
-        ],
+        "frameworks": ["Zero Trust", "NIST", "SOC2", "GDPR", "HIPAA", "CIS Controls"],
         "jamf_security": [
-            "Jamf Protect", "Compliance Monitoring", "Threat Detection",
-            "Endpoint Security"
+            "Jamf Protect",
+            "Compliance Monitoring",
+            "Threat Detection",
+            "Endpoint Security",
         ],
         "apple_security": [
-            "System Integrity Protection", "Secure Boot", "Hardware Security",
-            "App Notarization", "Lockdown Mode", "Rapid Security Response"
-        ]
+            "System Integrity Protection",
+            "Secure Boot",
+            "Hardware Security",
+            "App Notarization",
+            "Lockdown Mode",
+            "Rapid Security Response",
+        ],
     },
     "common_terms": {
         "deployment": [
-            "Mass Deployment", "Imaging", "ADE Enrollment", "User Enrollment",
-            "Device Enrollment", "Zero-Touch Deployment"
+            "Mass Deployment",
+            "Imaging",
+            "ADE Enrollment",
+            "User Enrollment",
+            "Device Enrollment",
+            "Zero-Touch Deployment",
         ],
         "troubleshooting": [
-            "Inventory Update", "Policy Execution", "Log Collection",
-            "Remote Desktop", "Screen Sharing"
+            "Inventory Update",
+            "Policy Execution",
+            "Log Collection",
+            "Remote Desktop",
+            "Screen Sharing",
         ],
         "integration": [
-            "Active Directory", "LDAP", "SSO", "SCEP", "PKI", "API Integration",
-            "Platform SSO"
-        ]
-    }
+            "Active Directory",
+            "LDAP",
+            "SSO",
+            "SCEP",
+            "PKI",
+            "API Integration",
+            "Platform SSO",
+        ],
+    },
 }
 
 
@@ -133,10 +206,10 @@ def analyze_conversation_flow(messages: list[dict], summary: str) -> dict:
         assistant_messages = [m for m in messages if m.get("role") == "assistant"]
 
         total_messages = len(messages)
+        user_ratio = len(user_messages) / total_messages if total_messages > 0 else 0
         if total_messages == 0:
             balance_score = 0
         else:
-            user_ratio = len(user_messages) / total_messages
             # Optimal balance is around 40-60% user messages
             balance_score = max(0, 10 - abs(user_ratio - 0.5) * 20)
 
@@ -984,7 +1057,6 @@ def evaluate_efficiency_metrics(messages: list[dict], summary: str) -> dict:
             return {"status": "error", "error_message": "Messages must be a list"}
 
         assistant_messages = [m for m in messages if m.get("role") == "assistant"]
-        user_messages = [m for m in messages if m.get("role") == "user"]
 
         if not assistant_messages:
             return {
@@ -1938,7 +2010,6 @@ def evaluate_problem_resolution_confidence(messages: list[dict], summary: str) -
             return {"status": "error", "error_message": "Messages must be a list"}
 
         assistant_messages = [m for m in messages if m.get("role") == "assistant"]
-        user_messages = [m for m in messages if m.get("role") == "user"]
 
         if not assistant_messages:
             return {
@@ -2660,7 +2731,6 @@ def analyze_security_compliance_guidance(messages: list[dict], summary: str) -> 
             }
 
         # First determine if this conversation is about security/compliance topics
-        security_context_indicators = []
         all_content = " ".join(
             [str(msg.get("content", "")).lower() for msg in assistant_messages]
         )
@@ -3707,15 +3777,38 @@ analyzer_agent = Agent(
         "- User training issues masquerading as product problems\n"
         "- Irrational complaints without technical basis\n"
         "- Complaints about conversation style rather than product functionality\n\n"
+        "**TECHNICAL LIMITATIONS OF THE ORIGINAL ASSISTANT (CRITICAL!):**\n"
+        "Distinguish between BEHAVIORAL issues vs CAPABILITY limitations. Be AGGRESSIVE in identifying\n"
+        "when the original assistant may have genuine technical constraints, not just poor performance:\n\n"
+        "Signs of TECHNICAL LIMITATIONS (not the assistant's fault - product improvement opportunities):\n"
+        "- Can't query databases: 'I don't have access to your account info', 'I can't look up that data'\n"
+        "- Can't access external systems: 'I'm unable to check your Jamf Pro instance', 'I can't see your config'\n"
+        "- Can't provide downloads/links: 'I can't generate download links', 'I can't attach files'\n"
+        "- Can't execute actions: 'I can't push a profile to your device', 'I can't reset your password'\n"
+        "- Can't access real-time data: 'I don't have current status', 'I can't check inventory'\n"
+        "- Limited knowledge cutoff: References to 'my training data', outdated info\n"
+        "- No authentication/authorization: Can't access customer-specific resources\n"
+        "- Read-only nature: Explains concepts but can't perform operations\n\n"
+        "When you see user frustration around these issues, note that the assistant may be CORRECTLY\n"
+        "communicating its limitations, even if that communication frustrated the user.\n"
+        "In your analysis, CLEARLY DISTINGUISH:\n"
+        "- 'The assistant lacks this capability' (technical limitation - potential product improvement)\n"
+        "- 'The assistant handled this poorly' (behavioral issue - training/prompt improvement)\n\n"
         "YOUR DEVELOPER-FOCUSED REPORT (ANALYSIS ONLY - NO RAW DATA):\n"
         "1. **Feedback Summary**: What technical issues, requests, or concerns were raised?\n"
         "2. **Actionability Assessment**: Is this feedback technically valid and actionable?\n"
         "3. **Priority Classification**: High (bugs/critical issues), Medium (features), Low (preferences)\n"
-        "4. **Technical Details**: Specific product areas, features, or workflows affected\n"
-        "5. **Root Cause Analysis**: Is this a product limitation, documentation gap, or user training issue?\n"
-        "6. **Developer Recommendations**: Specific actions development teams could take\n"
-        "7. **Domain Context** (if relevant): Technical validation using Jamf/Apple expertise\n"
-        "8. **Confidence Level**: How confident are you in the technical validity of this feedback?\n\n"
+        "4. **Technical Limitations Identified**: IMPORTANT - List any suspected capability gaps in the original\n"
+        "   assistant (e.g., 'Cannot query customer databases', 'Cannot generate download links', 'Cannot\n"
+        "   access real-time system status'). Be aggressive in guessing - if the assistant says 'I can't do X',\n"
+        "   that's likely a technical limitation worth noting as a potential product improvement.\n"
+        "5. **Behavior vs Capability**: Clearly distinguish: Was user frustration due to HOW the assistant\n"
+        "   responded (behavior issue) or WHAT it couldn't do (capability limitation)?\n"
+        "6. **Technical Details**: Specific product areas, features, or workflows affected\n"
+        "7. **Root Cause Analysis**: Is this a product limitation, documentation gap, or user training issue?\n"
+        "8. **Developer Recommendations**: Specific actions development teams could take\n"
+        "9. **Domain Context** (if relevant): Technical validation using Jamf/Apple expertise\n"
+        "10. **Confidence Level**: How confident are you in the technical validity of this feedback?\n\n"
         "CRITICAL OUTPUT FORMAT:\n"
         "Your output must contain ONLY:\n"
         "- 'summary': Your structured summary text\n"
