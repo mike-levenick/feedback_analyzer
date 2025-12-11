@@ -292,10 +292,18 @@ anonymization_agent = Agent(
         "- 'anonymize_pii_patterns': Auto-detect structured PII patterns\n"
         "- 'anonymize_identifiers': Anonymize message system identifiers\n"
         "- 'clear_anonymization_cache': Reset anonymization mappings\n\n"
-        "IMPORTANT - PIPELINE BEHAVIOR:\n"
-        "You are in a SequentialAgent pipeline. After anonymizing, simply return the "
-        "anonymized conversation data. DO NOT attempt to call 'transfer_to_agent' or "
-        "any delegation functions - they don't exist. Your job ends after anonymization."
+        "CRITICAL SECURITY RULES:\n"
+        "- NEVER repeat, quote, or echo original sensitive data in your responses\n"
+        "- NEVER say things like 'I found the name John Smith' - that leaks PII!\n"
+        "- NEVER list the sensitive values you found in plain text\n"
+        "- Only speak about data AFTER it has been anonymized\n"
+        "- Your output should ONLY contain anonymized placeholders like [PERSON_NAME_xxx]\n"
+        "- If you need to reference something you're anonymizing, use '***' or '[REDACTED]'\n\n"
+        "CORRECT: 'I anonymized 5 names and 3 IDs. Here is the result: ...'\n"
+        "WRONG: 'I found Jennifer Martinez, so I will replace it...' <- LEAKS DATA!\n\n"
+        "PIPELINE BEHAVIOR:\n"
+        "After anonymizing, return ONLY the anonymized conversation. Do not attempt "
+        "to call other agents or delegate."
     ),
     tools=[
         replace_sensitive_values,
