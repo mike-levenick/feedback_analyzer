@@ -2581,7 +2581,8 @@ analyzer_agent = Agent(
         "[Message data here]\n\n"
         "=== SUMMARY ===\n"
         "[Summary data here]\n\n"
-        "FIRST: Parse this input to extract the messages and summary separately.\n\n"
+        "FIRST: Parse this input to extract the messages and summary separately.\n"
+        "IMPORTANT: DO NOT include the raw anonymized conversation in your output - only provide analysis results.\n\n"
 
         "YOUR INVESTIGATION APPROACH:\n"
         "1. **Parse Input**: Extract messages and summary from the formatted input\n"
@@ -2627,7 +2628,7 @@ analyzer_agent = Agent(
         "- Complex technical discussions open to interpretation\n"
         "- Edge cases requiring non-standard approaches\n\n"
 
-        "YOUR INVESTIGATION REPORT:\n"
+        "YOUR INVESTIGATION REPORT (ANALYSIS ONLY - NO RAW DATA):\n"
         "1. **What Happened**: Brief overview of the conversation and main topic\n"
         "2. **Key Findings**: Most significant patterns, issues, or highlights discovered\n"
         "3. **Flagging Investigation**: Why might this have been flagged? (Consider positive, negative, unclear)\n"
@@ -2636,6 +2637,8 @@ analyzer_agent = Agent(
         "6. **Domain Context** (if relevant): Was appropriate Jamf/Apple expertise demonstrated?\n"
         "7. **User Experience**: What likely experience did the end-user have?\n"
         "8. **Confidence**: How confident are you in your analysis?\n\n"
+        "NOTE: Your output should contain ONLY your analysis findings, insights, and conclusions. "
+        "Do NOT reproduce or quote the anonymized conversation messages in your report.\n\n"
 
         "INVESTIGATION PRINCIPLES:\n"
         "- **Be Objective**: Look for evidence without assuming positive or negative flagging\n"
